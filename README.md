@@ -6,7 +6,7 @@
 
 **Tired of fighting with Google Slides or Keynote?** 
 
-If you're an engineer who dreads the phrase "just use this template," Calliope Canvas is your solution.
+If you're someone who dreads the phrase "just use this template," Calliope Canvas is your solution.
 
 We believe that if your stack uses code, your presentations should too. This app fixes the pain of building slides and transforms it into a fluid, component-driven development process. You get to write your slides in React and TypeScript, unlocking the ability to build literally any custom animation, complex interactive element, or breathtaking pizzazz you can dream up.
 
@@ -50,38 +50,36 @@ Your app will be available at http://localhost:3000
 
 ## Structure
 
-```                                                                                                                    │
-│ Calliope-Canvas/                                                                                                       │
-│ │                                                                                                                      │
-│ ├── 📂 components/              # Add your own reusable React Components                                                            │
-│ │   ├── Footer.tsx             # Application footer component                                                          │
-│ │   └── Icons.tsx              # Icon library and components                                                           │
-│ │                                                                                                                      │
-│ ├── 📂 slides/                  # Add your own Presentation Slides                                                                  │
-│ │   └── TitleSlide.tsx         # Default title slide component                                                           │
-│ │                                                                                                                      │
-│ ├── 📂 images/                  # Add your own static assets                                                                        │
-│ │   ├── cover.png                                                                           │
-│ │   └── logo-on-black.png                                                                           │
-│ │                                                                                                                      │
-│ ├── 📂 node_modules/                                                                    │
-│ │                                                                                                                      │
-│ ├── 📄 App.tsx                  # Main Application Component                                                           │
-│ ├── 📄 index.tsx                # Application Entry Point                                                              │
-│ ├── 📄 index.html               # HTML Template                                                                        │
-│ ├── 📄 types.ts                 # Global TypeScript Definitions                                                        │
-│ ├── 📄 metadata.json            # Project Metadata                                                                     │
-│ │                                                                                                                      │
-│ ├── ⚙️ package.json             # NPM Configuration                                                                    │
-│ ├── ⚙️ package-lock.json        # Dependency Lock File                                                                 │
-│ ├── ⚙️ tsconfig.json            # TypeScript Configuration                                                             │
-│ ├── ⚙️ vite.config.ts           # Vite Build Configuration                                                             │
-│ ├── ⚙️ .gitignore               # Git Ignore Rules                                                                     │
-│ │                                                                                                                      │
-│ └── 📖 README.md                # Project Documentation                                                                │
-│ ```
-
-
+```                                                                                                                    
+Calliope-Canvas/                                                                                                       
+│                                                                                                                      
+├── 📂 components/                                                                  
+│   ├── Footer.tsx                                                                        
+│   └── Icons.tsx                                                                       
+│                                                                                                                      
+├── 📂 slides/                  # Add your slides here                                                                  
+│   └── TitleSlide.tsx                                                                  
+│                                                                                                                      
+├── 📂 images/                  # Add your images here                                                                       
+│   ├── cover.png                                                                           
+│   └── logo-on-black.png                                                                           
+│                                                                                                                      
+├── 📂 node_modules/                                                                    
+│                                                                                                                      
+├── 📄 App.tsx                                                                           
+├── 📄 index.tsx                                                                            
+├── 📄 index.html                                                                                       
+├── 📄 types.ts                                                                    
+├── 📄 metadata.json                                                                              
+│                                                                                                                      
+├── ⚙️ package.json                                                                              
+├── ⚙️ package-lock.json                                                                     
+├── ⚙️ tsconfig.json                                                                  
+├── ⚙️ vite.config.ts                                                                    
+├── ⚙️ .gitignore                                                                                
+│                                                                                                                      
+└── 📖 README.md                                                                              
+```
 ## Contributing
 
 All contributions are welcome! Please open an issue or submit a pull request.
