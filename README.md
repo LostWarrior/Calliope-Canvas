@@ -2,6 +2,8 @@
 
 Your slides are code. Your code is art.
 
+<img src="../images/logo2.png" alt="Calliope Canvas Logo" />
+
 **Tired of fighting with Google Slides or Keynote?** 
 
 If you're an engineer who dreads the phrase "just use this template," Calliope Canvas is your solution.
