@@ -2,7 +2,7 @@
 
 Your slides are code. Your code is art.
 
-<img src="../images/logo2.png" alt="Calliope Canvas Logo" />
+<img src="images/logo.png" alt="Calliope Canvas Logo" />
 
 **Tired of fighting with Google Slides or Keynote?** 
 
