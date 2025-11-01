@@ -17,3 +17,71 @@ Because your slides are just simple, modular code, they integrate perfectly with
 **No more templates**
 
 Stop wrestling with outdated software. Start building unforgettable decks on a powerful, version-controlled codebase designed for technical elegance and visual impact.
+
+
+## 🚀 Getting Started
+
+### Install Dependencies
+```bash
+npm install
+```
+### Development
+
+```bash
+npm run dev
+```
+
+### Build
+
+```bash
+npm run build
+```
+
+### Preview
+
+```bash
+npm run preview
+```
+
+That's it! 
+
+Your app will be available at http://localhost:3000
+
+
+## Structure
+
+```                                                                                                                    │
+│ Calliope-Canvas/                                                                                                       │
+│ │                                                                                                                      │
+│ ├── 📂 components/              # Add your own reusable React Components                                                            │
+│ │   ├── Footer.tsx             # Application footer component                                                          │
+│ │   └── Icons.tsx              # Icon library and components                                                           │
+│ │                                                                                                                      │
+│ ├── 📂 slides/                  # Add your own Presentation Slides                                                                  │
+│ │   └── TitleSlide.tsx         # Default title slide component                                                           │
+│ │                                                                                                                      │
+│ ├── 📂 images/                  # Add your own static assets                                                                        │
+│ │   ├── cover.png                                                                           │
+│ │   └── logo-on-black.png                                                                           │
+│ │                                                                                                                      │
+│ ├── 📂 node_modules/                                                                    │
+│ │                                                                                                                      │
+│ ├── 📄 App.tsx                  # Main Application Component                                                           │
+│ ├── 📄 index.tsx                # Application Entry Point                                                              │
+│ ├── 📄 index.html               # HTML Template                                                                        │
+│ ├── 📄 types.ts                 # Global TypeScript Definitions                                                        │
+│ ├── 📄 metadata.json            # Project Metadata                                                                     │
+│ │                                                                                                                      │
+│ ├── ⚙️ package.json             # NPM Configuration                                                                    │
+│ ├── ⚙️ package-lock.json        # Dependency Lock File                                                                 │
+│ ├── ⚙️ tsconfig.json            # TypeScript Configuration                                                             │
+│ ├── ⚙️ vite.config.ts           # Vite Build Configuration                                                             │
+│ ├── ⚙️ .gitignore               # Git Ignore Rules                                                                     │
+│ │                                                                                                                      │
+│ └── 📖 README.md                # Project Documentation                                                                │
+│ ```
+
+
+## Contributing
+
+All contributions are welcome! Please open an issue or submit a pull request.
