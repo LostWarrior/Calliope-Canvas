@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import TitleSlide from './slides/TitleSlide';
+import PlaceholderSlide from './slides/PlaceholderSlide';
 import Footer from './components/Footer';
 
 const slides = [
   <TitleSlide />,
+  <PlaceholderSlide />,
 ];
 
 let hasAttemptedInitialVoiceStart = false;
