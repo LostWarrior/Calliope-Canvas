@@ -37,6 +37,19 @@ npm run dev
 npm run build
 ```
 
+### Voice Controls
+
+Voice now asks for microphone permission when the deck loads and arms speech recognition immediately after permission is granted. Use commands like:
+
+- `Next Slide`
+- `Next Slide Please`
+- `Let's go back`
+- `Previous Slide Please`
+- `Start Animation`
+- `Stop Animation`
+- `Zoom In`
+- `Zoom Out`
+
 ### Preview
 
 ```bash
