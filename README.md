@@ -50,6 +50,28 @@ Voice now asks for microphone permission when the deck loads and arms speech rec
 - `Zoom In`
 - `Zoom Out`
 
+### Speaker Notes
+
+Slides can include optional speaker notes alongside the rendered slide component:
+
+```tsx
+const slides = [
+  {
+    content: <TitleSlide />,
+    notes: [
+      'Welcome the audience and introduce the topic.',
+      '[Mention what the audience should expect next.]',
+    ],
+    title: 'Title slide',
+  },
+];
+```
+
+Text wrapped in square brackets is italicized automatically in the speaker-notes window.
+
+Use the `Notes` button in the footer to open a synced speaker-notes window. You can also open it directly with `?speaker-notes=1`.
+The speaker-notes window has its own previous and next buttons, which keep the main deck in sync.
+
 ### Preview
 
 ```bash

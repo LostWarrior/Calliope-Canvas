@@ -6,7 +6,8 @@ interface FooterProps {
     isVoiceSupported: boolean;
     lastCommand: string | null;
     lastHeard: string | null;
-    slides: React.ReactNode[];
+    openSpeakerNotesView: () => void;
+    slideCount: number;
     goToPrev: () => void;
     goToNext: () => void;
     toggleFullscreen: () => void;
@@ -23,7 +24,8 @@ const Footer: React.FC<FooterProps> = ({
     isVoiceSupported,
     lastCommand,
     lastHeard,
-    slides,
+    openSpeakerNotesView,
+    slideCount,
     toggleFullscreen,
     voiceError,
 }) => {
@@ -60,14 +62,21 @@ const Footer: React.FC<FooterProps> = ({
             Previous
           </button>
           <span className="text-slate-400 font-mono">
-            {currentSlide + 1} / {slides.length}
+            {currentSlide + 1} / {slideCount}
           </span>
           <button
             onClick={goToNext}
-            disabled={currentSlide === slides.length - 1}
+            disabled={currentSlide === slideCount - 1}
             className="px-4 py-2 bg-sky-600 rounded-md text-white font-semibold hover:bg-sky-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Next
+          </button>
+          <button
+            onClick={openSpeakerNotesView}
+            className="px-4 py-2 bg-slate-700 rounded-md text-white font-semibold hover:bg-slate-600 transition-colors"
+            title="Open speaker notes"
+          >
+            Notes
           </button>
           <button
             onClick={toggleFullscreen}

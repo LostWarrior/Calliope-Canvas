@@ -3,10 +3,236 @@ import TitleSlide from './slides/TitleSlide';
 import PlaceholderSlide from './slides/PlaceholderSlide';
 import Footer from './components/Footer';
 
-const slides = [
-  <TitleSlide />,
-  <PlaceholderSlide />,
+type SlideDefinition = {
+  content: React.ReactNode;
+  notes?: React.ReactNode[];
+  title: string;
+};
+
+const slides: SlideDefinition[] = [
+  {
+    content: <TitleSlide />,
+    notes: [
+      'Hello, everyone.',
+      '[Welcome the audience and introduce the deck.]',
+      '[Set expectations for what this presentation will cover.]',
+    ],
+    title: 'Calliope Canvas',
+  },
+  {
+    content: <PlaceholderSlide />,
+    notes: [
+      'Replace this placeholder with the next slide in your presentation.',
+      'Speaker notes can contain reminders, transitions, or extra context.',
+    ],
+    title: 'Add your slide here',
+  },
 ];
+
+const SPEAKER_NOTES_CHANNEL = 'calliope-canvas-speaker-notes';
+const SPEAKER_NOTES_QUERY_PARAM = 'speaker-notes';
+
+type SpeakerNotesStateMessage = {
+  currentSlide: number;
+  type: 'speaker-notes-state';
+};
+
+type SpeakerNotesRequestMessage = {
+  type: 'speaker-notes-request-state';
+};
+
+type SpeakerNotesSetSlideMessage = {
+  currentSlide: number;
+  type: 'speaker-notes-set-slide';
+};
+
+type SpeakerNotesMessage =
+  | SpeakerNotesStateMessage
+  | SpeakerNotesRequestMessage
+  | SpeakerNotesSetSlideMessage;
+
+const isSpeakerNotesRoute = () => {
+  if (typeof window === 'undefined') {
+    return false;
+  }
+
+  return new URLSearchParams(window.location.search).get(SPEAKER_NOTES_QUERY_PARAM) === '1';
+};
+
+const clampSlideIndex = (slideIndex: number) =>
+  Math.min(slides.length - 1, Math.max(0, slideIndex));
+
+const isSpeakerNotesMessage = (message: unknown): message is SpeakerNotesMessage => {
+  if (!message || typeof message !== 'object') {
+    return false;
+  }
+
+  const { type } = message as { type?: unknown };
+  return (
+    type === 'speaker-notes-state'
+    || type === 'speaker-notes-request-state'
+    || type === 'speaker-notes-set-slide'
+  );
+};
+
+const postSpeakerNotesState = (
+  channel: BroadcastChannel | null,
+  currentSlide: number
+) => {
+  channel?.postMessage({
+    currentSlide,
+    type: 'speaker-notes-state',
+  } satisfies SpeakerNotesStateMessage);
+};
+
+const postSpeakerNotesSlideChange = (
+  channel: BroadcastChannel | null,
+  currentSlide: number
+) => {
+  channel?.postMessage({
+    currentSlide,
+    type: 'speaker-notes-set-slide',
+  } satisfies SpeakerNotesSetSlideMessage);
+};
+
+const getSlideNotes = (slide: SlideDefinition) =>
+  slide.notes?.length ? slide.notes : ['No speaker notes for this slide.'];
+
+const renderSpeakerNote = (note: React.ReactNode) => {
+  if (typeof note !== 'string') {
+    return note;
+  }
+
+  return note.split(/(\[[^\]]+\])/g).map((part, index) => {
+    if (part.startsWith('[') && part.endsWith(']')) {
+      return (
+        <em key={`${part}-${index}`} className="italic">
+          {part}
+        </em>
+      );
+    }
+
+    return <React.Fragment key={`${part}-${index}`}>{part}</React.Fragment>;
+  });
+};
+
+const SpeakerNotesView: React.FC = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isConnected, setIsConnected] = useState(false);
+  const speakerNotesChannelRef = useRef<BroadcastChannel | null>(null);
+  const currentSlideDefinition = slides[currentSlide];
+  const nextSlideDefinition = slides[currentSlide + 1];
+
+  const goToSlide = (slideIndex: number) => {
+    const nextSlide = clampSlideIndex(slideIndex);
+
+    setCurrentSlide(nextSlide);
+    postSpeakerNotesSlideChange(speakerNotesChannelRef.current, nextSlide);
+  };
+
+  const goToNext = () => {
+    goToSlide(currentSlide + 1);
+  };
+
+  const goToPrev = () => {
+    goToSlide(currentSlide - 1);
+  };
+
+  useEffect(() => {
+    if (typeof BroadcastChannel === 'undefined') {
+      return undefined;
+    }
+
+    const channel = new BroadcastChannel(SPEAKER_NOTES_CHANNEL);
+    speakerNotesChannelRef.current = channel;
+
+    channel.onmessage = (event: MessageEvent<unknown>) => {
+      if (!isSpeakerNotesMessage(event.data) || event.data.type !== 'speaker-notes-state') {
+        return;
+      }
+
+      setCurrentSlide(clampSlideIndex(event.data.currentSlide));
+      setIsConnected(true);
+    };
+
+    channel.postMessage({ type: 'speaker-notes-request-state' } satisfies SpeakerNotesRequestMessage);
+
+    return () => {
+      channel.close();
+
+      if (speakerNotesChannelRef.current === channel) {
+        speakerNotesChannelRef.current = null;
+      }
+    };
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-slate-950 px-6 py-8 font-sans text-slate-100">
+      <div className="mx-auto flex max-w-5xl flex-col gap-6">
+        <header className="flex flex-col gap-4 border-b border-slate-800 pb-5">
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              onClick={goToPrev}
+              disabled={currentSlide === 0}
+              className="px-4 py-2 bg-slate-700 rounded-md text-white font-semibold hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              Previous
+            </button>
+            <span className="text-sm font-semibold text-slate-400">
+              Slide {currentSlide + 1} / {slides.length}
+            </span>
+            <button
+              onClick={goToNext}
+              disabled={currentSlide === slides.length - 1}
+              className="px-4 py-2 bg-sky-600 rounded-md text-white font-semibold hover:bg-sky-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              Next
+            </button>
+          </div>
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.3em] text-sky-300">
+              Speaker Notes
+            </p>
+            <h1 className="mt-2 text-4xl font-extrabold text-white">
+              {currentSlideDefinition.title}
+            </h1>
+          </div>
+        </header>
+
+        <main className="grid gap-6 lg:grid-cols-[1fr_18rem]">
+          <section className="rounded-lg border border-slate-800 bg-slate-900 px-7 py-6">
+            <h2 className="text-xl font-semibold text-white">Notes</h2>
+            <ul className="mt-5 space-y-4 text-2xl leading-relaxed text-slate-200">
+              {getSlideNotes(currentSlideDefinition).map((note, index) => (
+                <li key={index}>{renderSpeakerNote(note)}</li>
+              ))}
+            </ul>
+          </section>
+
+          <aside className="flex flex-col gap-4">
+            <div className="rounded-lg border border-slate-800 bg-slate-900 px-5 py-5">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+                Sync
+              </p>
+              <p className={`mt-3 text-lg font-semibold ${isConnected ? 'text-emerald-300' : 'text-amber-300'}`}>
+                {isConnected ? 'Connected to deck' : 'Waiting for deck'}
+              </p>
+            </div>
+
+            <div className="rounded-lg border border-slate-800 bg-slate-900 px-5 py-5">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+                Next
+              </p>
+              <p className="mt-3 text-lg font-semibold text-slate-100">
+                {nextSlideDefinition ? nextSlideDefinition.title : 'End of deck'}
+              </p>
+            </div>
+          </aside>
+        </main>
+      </div>
+    </div>
+  );
+};
 
 let hasAttemptedInitialVoiceStart = false;
 
@@ -90,7 +316,7 @@ const getMicrophonePermissionErrorMessage = (error: unknown) => {
   return error instanceof Error ? error.message : 'Microphone access could not be started.';
 };
 
-const App: React.FC = () => {
+const DeckView: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [animationsPaused, setAnimationsPaused] = useState(false);
@@ -102,6 +328,8 @@ const App: React.FC = () => {
   const [voiceError, setVoiceError] = useState<string | null>(null);
 
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const currentSlideRef = useRef(currentSlide);
+  const speakerNotesChannelRef = useRef<BroadcastChannel | null>(null);
   const shouldKeepListeningRef = useRef(false);
   const isVoiceSupported = getSpeechRecognition() !== null;
 
@@ -148,6 +376,23 @@ const App: React.FC = () => {
     }
   };
 
+  const openSpeakerNotesView = () => {
+    const speakerNotesUrl = new URL(window.location.href);
+    speakerNotesUrl.searchParams.set(SPEAKER_NOTES_QUERY_PARAM, '1');
+
+    const speakerNotesWindow = window.open(
+      speakerNotesUrl.toString(),
+      'calliope-speaker-notes',
+      'popup,width=1000,height=760'
+    );
+
+    speakerNotesWindow?.focus();
+
+    window.setTimeout(() => {
+      postSpeakerNotesState(speakerNotesChannelRef.current, currentSlideRef.current);
+    }, 100);
+  };
+
   useEffect(() => {
     const handleFullscreenChange = () => {
       setIsFullscreen(Boolean(document.fullscreenElement));
@@ -160,6 +405,45 @@ const App: React.FC = () => {
       document.removeEventListener('fullscreenchange', handleFullscreenChange);
     };
   }, []);
+
+  useEffect(() => {
+    if (typeof BroadcastChannel === 'undefined') {
+      return undefined;
+    }
+
+    const channel = new BroadcastChannel(SPEAKER_NOTES_CHANNEL);
+    speakerNotesChannelRef.current = channel;
+
+    channel.onmessage = (event: MessageEvent<unknown>) => {
+      if (!isSpeakerNotesMessage(event.data)) {
+        return;
+      }
+
+      if (event.data.type === 'speaker-notes-request-state') {
+        postSpeakerNotesState(channel, currentSlideRef.current);
+        return;
+      }
+
+      if (event.data.type === 'speaker-notes-set-slide') {
+        setCurrentSlide(clampSlideIndex(event.data.currentSlide));
+      }
+    };
+
+    postSpeakerNotesState(channel, currentSlideRef.current);
+
+    return () => {
+      channel.close();
+
+      if (speakerNotesChannelRef.current === channel) {
+        speakerNotesChannelRef.current = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    currentSlideRef.current = currentSlide;
+    postSpeakerNotesState(speakerNotesChannelRef.current, currentSlide);
+  }, [currentSlide]);
 
   commandHandlersRef.current = {
     next: goToNext,
@@ -379,7 +663,7 @@ const App: React.FC = () => {
           style={{ transform: `scale(${zoomLevel})` }}
         >
           <div className="slide-container w-full">
-            {slides[currentSlide]}
+            {slides[currentSlide].content}
           </div>
         </div>
       </main>
@@ -393,12 +677,15 @@ const App: React.FC = () => {
         isVoiceSupported={isVoiceSupported}
         lastCommand={lastCommand}
         lastHeard={lastHeard}
-        slides={slides}
+        openSpeakerNotesView={openSpeakerNotesView}
+        slideCount={slides.length}
         toggleFullscreen={toggleFullscreen}
         voiceError={voiceError}
       />
     </div>
   );
 };
+
+const App: React.FC = () => (isSpeakerNotesRoute() ? <SpeakerNotesView /> : <DeckView />);
 
 export default App;
