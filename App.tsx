@@ -166,24 +166,30 @@ const SpeakerNotesView: React.FC = () => {
     <div className="min-h-screen bg-slate-950 px-6 py-8 font-sans text-slate-100">
       <div className="mx-auto flex max-w-5xl flex-col gap-6">
         <header className="flex flex-col gap-4 border-b border-slate-800 pb-5">
-          <div className="flex flex-wrap items-center gap-3">
-            <button
-              onClick={goToPrev}
-              disabled={currentSlide === 0}
-              className="px-3 py-1.5 text-sm bg-slate-700 rounded-md text-white font-semibold hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              Previous
-            </button>
-            <span className="text-sm font-semibold text-slate-400">
-              Slide {currentSlide + 1} / {slides.length}
-            </span>
-            <button
-              onClick={goToNext}
-              disabled={currentSlide === slides.length - 1}
-              className="px-3 py-1.5 text-sm bg-sky-600 rounded-md text-white font-semibold hover:bg-sky-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              Next
-            </button>
+          <div className="flex flex-wrap items-center justify-between gap-3 w-full">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={goToPrev}
+                disabled={currentSlide === 0}
+                className="px-3 py-1.5 text-sm bg-slate-700 rounded-md text-white font-semibold hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Previous
+              </button>
+              <span className="text-sm font-semibold text-slate-400">
+                Slide {currentSlide + 1} / {slides.length}
+              </span>
+              <button
+                onClick={goToNext}
+                disabled={currentSlide === slides.length - 1}
+                className="px-3 py-1.5 text-sm bg-sky-600 rounded-md text-white font-semibold hover:bg-sky-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Next
+              </button>
+            </div>
+            <div className={`flex items-center gap-2 text-sm font-semibold ${isConnected ? 'text-emerald-400' : 'text-amber-400'}`}>
+              <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-400' : 'bg-amber-400'}`}></div>
+              {isConnected ? 'Connected to deck' : 'Waiting for deck'}
+            </div>
           </div>
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.3em] text-sky-300">
@@ -206,14 +212,6 @@ const SpeakerNotesView: React.FC = () => {
           </section>
 
           <aside className="flex flex-col gap-4">
-            <div className="rounded-lg border border-slate-800 bg-slate-900 px-5 py-5">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
-                Sync
-              </p>
-              <p className={`mt-3 text-lg font-semibold ${isConnected ? 'text-emerald-300' : 'text-amber-300'}`}>
-                {isConnected ? 'Connected to deck' : 'Waiting for deck'}
-              </p>
-            </div>
 
             <div className="rounded-lg border border-slate-800 bg-slate-900 px-5 py-5">
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
