@@ -2,12 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import TitleSlide from './slides/TitleSlide';
 import PlaceholderSlide from './slides/PlaceholderSlide';
 import Footer from './components/Footer';
+import type { SlideDefinition } from './types';
 
-type SlideDefinition = {
-  content: React.ReactNode;
-  notes?: React.ReactNode[];
-  title: string;
-};
 
 const slides: SlideDefinition[] = [
   {
@@ -234,7 +230,6 @@ const SpeakerNotesView: React.FC = () => {
   );
 };
 
-let hasAttemptedInitialVoiceStart = false;
 
 const MIN_ZOOM_LEVEL = 0.8;
 const MAX_ZOOM_LEVEL = 1.4;
@@ -253,17 +248,17 @@ const VOICE_COMMANDS: Array<{
   label: string;
   phrases: string[];
 }> = [
-  { action: 'next', label: 'Next Slide', phrases: ['next slide please', 'next slide'] },
-  {
-    action: 'previous',
-    label: 'Previous Slide',
-    phrases: ['previous slide please', 'previous slide', 'lets go back', 'go back'],
-  },
-  { action: 'startAnimation', label: 'Start Animation', phrases: ['start animation'] },
-  { action: 'stopAnimation', label: 'Stop Animation', phrases: ['stop animation'] },
-  { action: 'zoomOut', label: 'Zoom Out', phrases: ['zoom out'] },
-  { action: 'zoomIn', label: 'Zoom In', phrases: ['zoom in'] },
-];
+    { action: 'next', label: 'Next Slide', phrases: ['next slide please', 'next slide'] },
+    {
+      action: 'previous',
+      label: 'Previous Slide',
+      phrases: ['previous slide please', 'previous slide', 'lets go back', 'go back'],
+    },
+    { action: 'startAnimation', label: 'Start Animation', phrases: ['start animation'] },
+    { action: 'stopAnimation', label: 'Stop Animation', phrases: ['stop animation'] },
+    { action: 'zoomOut', label: 'Zoom Out', phrases: ['zoom out'] },
+    { action: 'zoomIn', label: 'Zoom In', phrases: ['zoom in'] },
+  ];
 
 const normalizeTranscript = (transcript: string) =>
   transcript
@@ -341,6 +336,8 @@ const DeckView: React.FC = () => {
     zoomIn: () => undefined,
     zoomOut: () => undefined,
   });
+
+  const hasAttemptedInitialVoiceStartRef = useRef(false);
 
   const goToNext = () => {
     setCurrentSlide(prev => Math.min(slides.length - 1, prev + 1));
@@ -624,10 +621,10 @@ const DeckView: React.FC = () => {
 
     recognitionRef.current = recognition;
 
-    if (!hasAttemptedInitialVoiceStart) {
+    if (!hasAttemptedInitialVoiceStartRef.current) {
       const initialVoiceStartTimeout = window.setTimeout(() => {
-        if (recognitionRef.current === recognition && !hasAttemptedInitialVoiceStart) {
-          hasAttemptedInitialVoiceStart = true;
+        if (recognitionRef.current === recognition && !hasAttemptedInitialVoiceStartRef.current) {
+          hasAttemptedInitialVoiceStartRef.current = true;
           void requestMicrophonePermission();
         }
       }, 0);

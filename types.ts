@@ -12,3 +12,9 @@ export interface DataPacket {
   verticalOffsetClass: string;
   opacityClass: string;
 }
+
+export interface SlideDefinition {
+  content: React.ReactNode;
+  notes?: React.ReactNode[];
+  title?: string;
+}
