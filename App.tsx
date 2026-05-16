@@ -175,8 +175,8 @@ const SpeakerNotesView: React.FC = () => {
               >
                 Previous
               </button>
-              <span className="text-sm font-semibold text-slate-400">
-                Slide {currentSlide + 1} / {slides.length}
+              <span className="text-slate-400 font-mono">
+                {currentSlide + 1} / {slides.length}
               </span>
               <button
                 onClick={goToNext}
@@ -195,7 +195,7 @@ const SpeakerNotesView: React.FC = () => {
             <p className="text-sm font-semibold uppercase tracking-[0.3em] text-sky-300">
               Speaker Notes
             </p>
-            <h1 className="mt-2 text-4xl font-extrabold text-white">
+            <h1 className="mt-2 text-2xl font-semibold text-white">
               {currentSlideDefinition.title}
             </h1>
           </div>
@@ -204,7 +204,7 @@ const SpeakerNotesView: React.FC = () => {
         <main className="grid gap-6 lg:grid-cols-[1fr_18rem]">
           <section className="rounded-lg border border-slate-800 bg-slate-900 px-7 py-6">
             <h2 className="text-xl font-semibold text-white">Notes</h2>
-            <ul className="mt-5 space-y-4 text-2xl leading-relaxed text-slate-200">
+            <ul className="mt-5 space-y-4 text-xl leading-relaxed text-slate-200">
               {getSlideNotes(currentSlideDefinition).map((note, index) => (
                 <li key={index}>{renderSpeakerNote(note)}</li>
               ))}
