@@ -653,7 +653,8 @@ const DeckView: React.FC = () => {
   }, [isVoiceSupported]);
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 bg-slate-900 font-sans">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 bg-slate-900 font-sans relative">
+      <div className="progress-bar w-full" style={{ width: `${((currentSlide + 1) / slides.length) * 100}%` }}></div>
       <main className="relative z-0 w-full max-w-7xl flex-grow flex flex-col items-center justify-center">
         <div
           className={`presentation-stage w-full ${animationsPaused ? 'animations-paused' : ''}`}
