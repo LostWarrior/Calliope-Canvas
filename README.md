@@ -72,6 +72,12 @@ Text wrapped in square brackets is italicized automatically in the speaker-notes
 Use the `Notes` button in the footer to open a synced speaker-notes window. You can also open it directly with `?speaker-notes=1`.
 The speaker-notes window has its own previous and next buttons, which keep the main deck in sync.
 
+### Keyboard Help Menu
+
+Calliope Canvas also includes a built-in help menu that displays all available keyboard shortcuts and voice commands. 
+You can access this menu at any time while viewing the deck by pressing the `shift` + `?` keys on your keyboard. Press `shift` + `?` or `Esc` to close it.
+
+![Keyboard Help Menu](images/help-menu.png)
 ### Preview
 
 ```bash
