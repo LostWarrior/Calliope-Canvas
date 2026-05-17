@@ -18,3 +18,11 @@ export interface SlideDefinition {
   notes?: React.ReactNode[];
   title?: string;
 }
+
+export type VoiceAction =
+  | 'next'
+  | 'previous'
+  | 'startAnimation'
+  | 'stopAnimation'
+  | 'zoomIn'
+  | 'zoomOut';

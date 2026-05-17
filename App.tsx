@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import Footer from './components/Footer';
-import type { SlideDefinition } from './types';
+import type { SlideDefinition, VoiceAction } from './types';
 import { isSpeakerNotesRoute, SpeakerNotesView, SPEAKER_NOTES_QUERY_PARAM, SPEAKER_NOTES_CHANNEL, postSpeakerNotesState, isSpeakerNotesMessage } from './SpeakerNotes';
 import TitleSlide from './slides/TitleSlide';
 import PlaceholderSlide from './slides/PlaceholderSlide';
@@ -34,13 +34,7 @@ const ZOOM_STEP = 0.1;
 export const clampSlideIndex = (slideIndex: number) =>
   Math.min(slides.length - 1, Math.max(0, slideIndex));
 
-type VoiceAction =
-  | 'next'
-  | 'previous'
-  | 'startAnimation'
-  | 'stopAnimation'
-  | 'zoomIn'
-  | 'zoomOut';
+
 
 const VOICE_COMMANDS: Array<{
   action: VoiceAction;
