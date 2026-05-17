@@ -16,20 +16,43 @@ body {
   transition-property: none !important;
 }
 
-.slide-container > div {
+.slide-transition {
   width: 100%;
-  animation: fadeIn 0.5s ease-in-out;
+  animation-duration: 0.42s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+  will-change: transform, opacity;
 }
 
-@keyframes fadeIn {
+.slide-transition-forward {
+  animation-name: slideInFromRight;
+}
+
+.slide-transition-backward {
+  animation-name: slideInFromLeft;
+}
+
+@keyframes slideInFromRight {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translate3d(3rem, 0, 0) scale(0.985);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translate3d(-3rem, 0, 0) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
@@ -61,4 +84,27 @@ body {
   left: 0;
   height: 3px;
   background: linear-gradient(to right, #38bdf8, #a855f7);
+}
+
+.help-modal-panel {
+  animation: helpModalIn 180ms ease-out;
+}
+
+@keyframes helpModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide-transition,
+  .help-modal-panel {
+    animation: none;
+  }
 }

@@ -3,6 +3,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import Footer from './components/Footer';
 import type { SlideDefinition, VoiceAction } from './types';
 import { isSpeakerNotesRoute, SpeakerNotesView, SPEAKER_NOTES_QUERY_PARAM, SPEAKER_NOTES_CHANNEL, postSpeakerNotesState, isSpeakerNotesMessage } from './SpeakerNotes';
+import HelpOverlay from './components/HelpOverlay';
+import { VOICE_COMMANDS, getHelpShortcutSections, getSlideTransitionClass, isPresentationShortcutAllowed } from './presentationBehavior';
 import TitleSlide from './slides/TitleSlide';
 import PlaceholderSlide from './slides/PlaceholderSlide';
 
@@ -33,25 +35,6 @@ const ZOOM_STEP = 0.1;
 
 export const clampSlideIndex = (slideIndex: number) =>
   Math.min(slides.length - 1, Math.max(0, slideIndex));
-
-
-
-const VOICE_COMMANDS: Array<{
-  action: VoiceAction;
-  label: string;
-  phrases: string[];
-}> = [
-    { action: 'next', label: 'Next Slide', phrases: ['next slide please', 'next slide'] },
-    {
-      action: 'previous',
-      label: 'Previous Slide',
-      phrases: ['previous slide please', 'previous slide', 'lets go back', 'go back'],
-    },
-    { action: 'startAnimation', label: 'Start Animation', phrases: ['start animation'] },
-    { action: 'stopAnimation', label: 'Stop Animation', phrases: ['stop animation'] },
-    { action: 'zoomOut', label: 'Zoom Out', phrases: ['zoom out'] },
-    { action: 'zoomIn', label: 'Zoom In', phrases: ['zoom in'] },
-  ];
 
 const normalizeTranscript = (transcript: string) =>
   transcript
@@ -106,9 +89,11 @@ const getMicrophonePermissionErrorMessage = (error: unknown) => {
 
 const DeckView: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [slideDirection, setSlideDirection] = useState<1 | -1>(1);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [animationsPaused, setAnimationsPaused] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(false);
   const [isVoiceListening, setIsVoiceListening] = useState(false);
   const [lastHeard, setLastHeard] = useState<string | null>(null);
@@ -131,13 +116,35 @@ const DeckView: React.FC = () => {
   });
 
   const hasAttemptedInitialVoiceStartRef = useRef(false);
+  const helpSections = getHelpShortcutSections();
 
   const goToNext = () => {
+    setSlideDirection(1);
     setCurrentSlide(prev => Math.min(slides.length - 1, prev + 1));
   };
 
   const goToPrev = () => {
+    setSlideDirection(-1);
     setCurrentSlide(prev => Math.max(0, prev - 1));
+  };
+
+  const goToSlide = (nextSlide: number) => {
+    const clampedSlide = clampSlideIndex(nextSlide);
+    const currentSlideValue = currentSlideRef.current;
+
+    if (clampedSlide !== currentSlideValue) {
+      setSlideDirection(clampedSlide > currentSlideValue ? 1 : -1);
+    }
+
+    setCurrentSlide(clampedSlide);
+  };
+
+  const closeHelp = () => {
+    setIsHelpOpen(false);
+  };
+
+  const toggleHelp = () => {
+    setIsHelpOpen(prev => !prev);
   };
 
   const zoomIn = () => {
@@ -215,7 +222,7 @@ const DeckView: React.FC = () => {
       }
 
       if (event.data.type === 'speaker-notes-set-slide') {
-        setCurrentSlide(clampSlideIndex(event.data.currentSlide));
+        goToSlide(event.data.currentSlide);
       }
     };
 
@@ -297,23 +304,51 @@ const DeckView: React.FC = () => {
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (isHelpOpen && !isPresentationShortcutAllowed(e.key, true)) {
+        e.preventDefault();
+        return;
+      }
+
+      if (e.key === '?') {
+        e.preventDefault();
+        toggleHelp();
+        return;
+      }
+
+      if (e.key === 'Escape' && isHelpOpen) {
+        e.preventDefault();
+        closeHelp();
+        return;
+      }
+
+      if (isHelpOpen) {
+        return;
+      }
+
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
         goToNext();
       } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
         goToPrev();
       } else if (e.key === 'f' || e.key === 'F') {
+        e.preventDefault();
         toggleFullscreen();
       } else if (e.key === '+') {
+        e.preventDefault();
         zoomIn();
       } else if (e.key === '-') {
+        e.preventDefault();
         zoomOut();
       } else if (e.key === ' ') {
+        e.preventDefault();
         if (animationsPaused) {
           startAnimations();
         } else {
           stopAnimations();
         }
       } else if (e.key === 'v' || e.key === 'V') {
+        e.preventDefault();
         if (shouldKeepListeningRef.current) {
           setVoiceControlsEnabled(false);
         } else {
@@ -324,7 +359,7 @@ const DeckView: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [animationsPaused]);
+  }, [animationsPaused, isHelpOpen]);
 
   useEffect(() => {
     if (!isVoiceSupported) {
@@ -454,7 +489,9 @@ const DeckView: React.FC = () => {
           style={{ transform: `scale(${zoomLevel})` }}
         >
           <div className="slide-container w-full">
-            {slides[currentSlide].content}
+            <div key={currentSlide} className={getSlideTransitionClass(slideDirection)}>
+              {slides[currentSlide].content}
+            </div>
           </div>
         </div>
       </main>
@@ -473,6 +510,7 @@ const DeckView: React.FC = () => {
         toggleFullscreen={toggleFullscreen}
         voiceError={voiceError}
       />
+      <HelpOverlay isOpen={isHelpOpen} onClose={closeHelp} sections={helpSections} />
     </div>
   );
 };
