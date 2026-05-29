@@ -94,6 +94,7 @@ const DeckView: React.FC = () => {
   const [animationsPaused, setAnimationsPaused] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [isFooterHidden, setIsFooterHidden] = useState(false);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(false);
   const [isVoiceListening, setIsVoiceListening] = useState(false);
   const [lastHeard, setLastHeard] = useState<string | null>(null);
@@ -334,6 +335,9 @@ const DeckView: React.FC = () => {
       } else if (e.key === 'f' || e.key === 'F') {
         e.preventDefault();
         toggleFullscreen();
+      } else if (e.key === 'h' || e.key === 'H') {
+        e.preventDefault();
+        setIsFooterHidden(prev => !prev);
       } else if (e.key === '+') {
         e.preventDefault();
         zoomIn();
@@ -499,6 +503,7 @@ const DeckView: React.FC = () => {
         currentSlide={currentSlide}
         goToNext={goToNext}
         goToPrev={goToPrev}
+        isControlsHidden={isFooterHidden}
         isFullscreen={isFullscreen}
         isVoiceEnabled={isVoiceEnabled}
         isVoiceListening={isVoiceListening}
