@@ -30,6 +30,7 @@ const HELP_SHORTCUT_ITEMS = [
   { shortcut: '+ / -', description: 'Zoom in or out' },
   { shortcut: '?', description: 'Open or close this help panel' },
   { shortcut: 'Esc', description: 'Close this help panel' },
+  { shortcut: 'H', description: 'Hide or show controls (keeps slide counter visible)' },
 ];
 
 /**
