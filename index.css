@@ -1,3 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+  --color-canvas: 15 23 42;
+  --color-surface: 30 41 59;
+  --color-elevated: 51 65 85;
+  --color-text: 241 245 249;
+  --color-muted: 148 163 184;
+  --color-border: 71 85 105;
+  --color-primary: 56 189 248;
+  --color-secondary: 51 65 85;
+  --color-accent: 168 85 247;
+  --color-danger: 251 113 133;
+  --color-focus: 125 211 252;
+  --duration-motion: 180ms;
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+  --color-canvas: 248 250 252;
+  --color-surface: 255 255 255;
+  --color-elevated: 226 232 240;
+  --color-text: 15 23 42;
+  --color-muted: 71 85 105;
+  --color-border: 203 213 225;
+  --color-primary: 2 132 199;
+  --color-secondary: 226 232 240;
+  --color-accent: 124 58 237;
+  --color-danger: 225 29 72;
+  --color-focus: 14 165 233;
+}
+
+[data-theme='contrast'] {
+  color-scheme: dark;
+  --color-canvas: 0 0 0;
+  --color-surface: 9 9 11;
+  --color-elevated: 39 39 42;
+  --color-text: 255 255 255;
+  --color-muted: 212 212 216;
+  --color-border: 255 255 255;
+  --color-primary: 250 204 21;
+  --color-secondary: 39 39 42;
+  --color-accent: 34 211 238;
+  --color-danger: 248 113 113;
+  --color-focus: 250 204 21;
+}
+
 body {
   margin: 0;
 }
@@ -83,7 +134,11 @@ body {
   top: 0;
   left: 0;
   height: 3px;
-  background: linear-gradient(to right, #38bdf8, #a855f7);
+  background: linear-gradient(
+    to right,
+    rgb(var(--color-primary)),
+    rgb(var(--color-accent))
+  );
 }
 
 .help-modal-panel {

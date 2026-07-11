@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import Footer from './components/Footer';
+import { ThemeProvider, useTheme } from './components/ThemeProvider';
 import type { SlideDefinition, VoiceAction } from './types';
 import { isSpeakerNotesRoute, SpeakerNotesView, SPEAKER_NOTES_QUERY_PARAM, SPEAKER_NOTES_CHANNEL, postSpeakerNotesState, isSpeakerNotesMessage } from './SpeakerNotes';
 import HelpOverlay from './components/HelpOverlay';
 import { VOICE_COMMANDS, getHelpShortcutSections, getSlideTransitionClass, isPresentationShortcutAllowed } from './presentationBehavior';
 import TitleSlide from './slides/TitleSlide';
 import PlaceholderSlide from './slides/PlaceholderSlide';
+import { isThemeName } from './theme';
 
 
 export const slides: SlideDefinition[] = [
@@ -100,9 +102,11 @@ const DeckView: React.FC = () => {
   const [lastHeard, setLastHeard] = useState<string | null>(null);
   const [lastCommand, setLastCommand] = useState<string | null>(null);
   const [voiceError, setVoiceError] = useState<string | null>(null);
+  const { setTheme, theme } = useTheme();
 
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const currentSlideRef = useRef(currentSlide);
+  const themeRef = useRef(theme);
   const speakerNotesChannelRef = useRef<BroadcastChannel | null>(null);
   const shouldKeepListeningRef = useRef(false);
   const isVoiceSupported = getSpeechRecognition() !== null;
@@ -187,7 +191,7 @@ const DeckView: React.FC = () => {
     speakerNotesWindow?.focus();
 
     window.setTimeout(() => {
-      postSpeakerNotesState(speakerNotesChannelRef.current, currentSlideRef.current);
+      postSpeakerNotesState(speakerNotesChannelRef.current, currentSlideRef.current, theme);
     }, 100);
   };
 
@@ -218,16 +222,21 @@ const DeckView: React.FC = () => {
       }
 
       if (event.data.type === 'speaker-notes-request-state') {
-        postSpeakerNotesState(channel, currentSlideRef.current);
+        postSpeakerNotesState(channel, currentSlideRef.current, themeRef.current);
         return;
       }
 
       if (event.data.type === 'speaker-notes-set-slide') {
         goToSlide(event.data.currentSlide);
+        return;
+      }
+
+      if (event.data.type === 'speaker-notes-set-theme' && isThemeName(event.data.theme)) {
+        setTheme(event.data.theme);
       }
     };
 
-    postSpeakerNotesState(channel, currentSlideRef.current);
+    postSpeakerNotesState(channel, currentSlideRef.current, themeRef.current);
 
     return () => {
       channel.close();
@@ -240,8 +249,9 @@ const DeckView: React.FC = () => {
 
   useEffect(() => {
     currentSlideRef.current = currentSlide;
-    postSpeakerNotesState(speakerNotesChannelRef.current, currentSlide);
-  }, [currentSlide]);
+    themeRef.current = theme;
+    postSpeakerNotesState(speakerNotesChannelRef.current, currentSlide, theme);
+  }, [currentSlide, theme]);
 
   commandHandlersRef.current = {
     next: goToNext,
@@ -485,7 +495,7 @@ const DeckView: React.FC = () => {
   }, [isVoiceSupported]);
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 bg-slate-900 font-sans relative">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 bg-canvas font-sans text-text relative">
       <div className="progress-bar w-full" style={{ width: `${((currentSlide + 1) / slides.length) * 100}%` }}></div>
       <main className="relative z-0 w-full max-w-7xl flex-grow flex flex-col items-center justify-center">
         <div
@@ -520,6 +530,20 @@ const DeckView: React.FC = () => {
   );
 };
 
-const App: React.FC = () => (isSpeakerNotesRoute() ? <SpeakerNotesView /> : <DeckView />);
+const RoutedApp: React.FC = () => {
+  const { theme } = useTheme();
+
+  return (
+    <div data-theme={theme} className="min-h-screen bg-canvas text-text">
+      {isSpeakerNotesRoute() ? <SpeakerNotesView /> : <DeckView />}
+    </div>
+  );
+};
+
+const App: React.FC = () => (
+  <ThemeProvider>
+    <RoutedApp />
+  </ThemeProvider>
+);
 
 export default App;

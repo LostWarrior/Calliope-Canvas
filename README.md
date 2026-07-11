@@ -72,6 +72,21 @@ Text wrapped in square brackets is italicized automatically in the speaker-notes
 Use the `Notes` button in the footer to open a synced speaker-notes window. You can also open it directly with `?speaker-notes=1`.
 The speaker-notes window has its own previous and next buttons, which keep the main deck in sync.
 
+### Themes
+
+Use the theme selector in the footer to switch between `Dark`, `Light`, and `Contrast`. The selected theme is saved in local storage and syncs with an open speaker-notes window.
+
+Slides should use semantic theme utilities instead of fixed palettes:
+
+```tsx
+<section className="bg-canvas text-text">
+  <p className="text-muted">Your text here</p>
+  <button className="bg-primary text-canvas">Action</button>
+</section>
+```
+
+Available semantic utilities include `canvas`, `surface`, `elevated`, `text`, `muted`, `border`, `primary`, `secondary`, `accent`, `danger`, and `focus`. Extend theme values in `index.css`; Tailwind maps those CSS variables in `tailwind.config.js`.
+
 ### Keyboard Help Menu
 
 Calliope Canvas also includes a built-in help menu that displays all available keyboard shortcuts and voice commands. 
