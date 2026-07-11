@@ -5,7 +5,9 @@ import { ThemeProvider, useTheme } from './components/ThemeProvider';
 import type { SlideDefinition, VoiceAction } from './types';
 import { isSpeakerNotesRoute, SpeakerNotesView, SPEAKER_NOTES_QUERY_PARAM, SPEAKER_NOTES_CHANNEL, postSpeakerNotesState, isSpeakerNotesMessage } from './SpeakerNotes';
 import HelpOverlay from './components/HelpOverlay';
-import { VOICE_COMMANDS, getHelpShortcutSections, getSlideTransitionClass, isPresentationShortcutAllowed } from './presentationBehavior';
+import { getHelpShortcutSections, getSlideTransitionClass, isPresentationShortcutAllowed } from './presentationBehavior';
+import { useSpeechRecognition, type FinalSpeechRecognitionResult } from './hooks/useSpeechRecognition';
+import { useSpeechFollow } from './hooks/useSpeechFollow';
 import TitleSlide from './slides/TitleSlide';
 import PlaceholderSlide from './slides/PlaceholderSlide';
 import { isThemeName } from './theme';
@@ -27,6 +29,9 @@ export const slides: SlideDefinition[] = [
       'Replace this placeholder with the next slide in your presentation.',
       'Speaker notes can contain reminders, transitions, or extra context.',
     ],
+    speech: {
+      cues: ['add your slide here', 'placeholder slide', 'next section'],
+    },
     title: 'Add your slide here',
   },
 ];
@@ -38,89 +43,22 @@ const ZOOM_STEP = 0.1;
 export const clampSlideIndex = (slideIndex: number) =>
   Math.min(slides.length - 1, Math.max(0, slideIndex));
 
-const normalizeTranscript = (transcript: string) =>
-  transcript
-    .toLowerCase()
-    .replace(/['’]/g, '')
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-
 const clampZoomLevel = (zoomLevel: number) =>
   Number(Math.min(MAX_ZOOM_LEVEL, Math.max(MIN_ZOOM_LEVEL, zoomLevel)).toFixed(2));
-
-const getSpeechRecognition = () => {
-  if (typeof window === 'undefined') {
-    return null;
-  }
-
-  return window.SpeechRecognition ?? window.webkitSpeechRecognition ?? null;
-};
-
-const getVoiceErrorMessage = (error: string) => {
-  switch (error) {
-    case 'audio-capture':
-      return 'No microphone was found for voice commands.';
-    case 'network':
-      return 'Voice recognition hit a network error.';
-    case 'not-allowed':
-    case 'service-not-allowed':
-      return 'Microphone access was denied.';
-    default:
-      return 'Voice recognition stopped unexpectedly.';
-  }
-};
-
-const getMicrophonePermissionErrorMessage = (error: unknown) => {
-  if (error instanceof DOMException) {
-    switch (error.name) {
-      case 'NotAllowedError':
-      case 'SecurityError':
-        return 'Microphone access was denied.';
-      case 'NotFoundError':
-        return 'No microphone was found for voice commands.';
-      case 'NotReadableError':
-        return 'The microphone is busy in another application.';
-      default:
-        return error.message || 'Microphone access could not be started.';
-    }
-  }
-
-  return error instanceof Error ? error.message : 'Microphone access could not be started.';
-};
 
 const DeckView: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [slideDirection, setSlideDirection] = useState<1 | -1>(1);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [animationsPaused, setAnimationsPaused] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isFooterHidden, setIsFooterHidden] = useState(false);
-  const [isVoiceEnabled, setIsVoiceEnabled] = useState(false);
-  const [isVoiceListening, setIsVoiceListening] = useState(false);
-  const [lastHeard, setLastHeard] = useState<string | null>(null);
-  const [lastCommand, setLastCommand] = useState<string | null>(null);
-  const [voiceError, setVoiceError] = useState<string | null>(null);
   const { setTheme, theme } = useTheme();
 
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
   const currentSlideRef = useRef(currentSlide);
   const themeRef = useRef(theme);
   const speakerNotesChannelRef = useRef<BroadcastChannel | null>(null);
-  const shouldKeepListeningRef = useRef(false);
-  const isVoiceSupported = getSpeechRecognition() !== null;
-
-  const commandHandlersRef = useRef({
-    next: () => undefined,
-    previous: () => undefined,
-    startAnimation: () => undefined,
-    stopAnimation: () => undefined,
-    zoomIn: () => undefined,
-    zoomOut: () => undefined,
-  });
-
-  const hasAttemptedInitialVoiceStartRef = useRef(false);
+  const speechFollowResultHandlerRef = useRef<(result: FinalSpeechRecognitionResult) => void>(() => undefined);
   const helpSections = getHelpShortcutSections();
 
   const goToNext = () => {
@@ -196,19 +134,6 @@ const DeckView: React.FC = () => {
   };
 
   useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(Boolean(document.fullscreenElement));
-    };
-
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    handleFullscreenChange();
-
-    return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-    };
-  }, []);
-
-  useEffect(() => {
     if (typeof BroadcastChannel === 'undefined') {
       return undefined;
     }
@@ -253,7 +178,7 @@ const DeckView: React.FC = () => {
     postSpeakerNotesState(speakerNotesChannelRef.current, currentSlide, theme);
   }, [currentSlide, theme]);
 
-  commandHandlersRef.current = {
+  const commandHandlers: Record<VoiceAction, () => void> = {
     next: goToNext,
     previous: goToPrev,
     startAnimation: startAnimations,
@@ -262,55 +187,34 @@ const DeckView: React.FC = () => {
     zoomOut,
   };
 
-  const setVoiceControlsEnabled = (shouldEnable: boolean) => {
-    if (!isVoiceSupported) {
-      setVoiceError('Voice recognition is not supported in this browser.');
-      return;
-    }
-
-    const recognition = recognitionRef.current;
-    if (!recognition) {
-      return;
-    }
-
-    shouldKeepListeningRef.current = shouldEnable;
-    setIsVoiceEnabled(shouldEnable);
-    setVoiceError(null);
-
-    try {
-      if (shouldEnable) {
-        recognition.start();
-        return;
-      }
-
-      recognition.stop();
-    } catch (error) {
-      if (error instanceof DOMException && error.name === 'InvalidStateError') {
-        return;
-      }
-
-      shouldKeepListeningRef.current = false;
-      setIsVoiceEnabled(false);
-      setVoiceError(error instanceof Error ? error.message : 'Voice recognition could not start.');
-    }
-  };
-
-  const requestMicrophonePermission = async () => {
-    if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
-      setVoiceControlsEnabled(true);
-      return;
-    }
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      stream.getTracks().forEach(track => track.stop());
-      setVoiceControlsEnabled(true);
-    } catch (error) {
-      shouldKeepListeningRef.current = false;
-      setIsVoiceEnabled(false);
-      setVoiceError(getMicrophonePermissionErrorMessage(error));
-    }
-  };
+  const {
+    isVoiceEnabled,
+    isVoiceListening,
+    isVoiceSupported,
+    requestMicrophonePermission,
+    setVoiceControlsEnabled,
+    voiceError,
+  } = useSpeechRecognition({
+    onFinalResult: result => speechFollowResultHandlerRef.current(result),
+  });
+  const {
+    canUndoAutoAdvance,
+    isSpeechFollowEnabled,
+    lastAutoAdvance,
+    lastCommand,
+    lastHeard,
+    onFinalRecognitionResult,
+    setIsSpeechFollowEnabled,
+    undoAutoAdvance,
+  } = useSpeechFollow({
+    commandHandlers,
+    currentSlide,
+    isMatchingBlocked: isHelpOpen,
+    isRecognitionAvailable: isVoiceEnabled,
+    onGoToSlide: goToSlide,
+    slides,
+  });
+  speechFollowResultHandlerRef.current = onFinalRecognitionResult;
 
   // Keyboard navigation
   useEffect(() => {
@@ -363,136 +267,20 @@ const DeckView: React.FC = () => {
         }
       } else if (e.key === 'v' || e.key === 'V') {
         e.preventDefault();
-        if (shouldKeepListeningRef.current) {
+        if (isVoiceEnabled) {
           setVoiceControlsEnabled(false);
         } else {
           void requestMicrophonePermission();
         }
+      } else if (e.key === 'u' || e.key === 'U') {
+        e.preventDefault();
+        undoAutoAdvance();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [animationsPaused, isHelpOpen]);
-
-  useEffect(() => {
-    if (!isVoiceSupported) {
-      return undefined;
-    }
-
-    const SpeechRecognition = getSpeechRecognition();
-    if (!SpeechRecognition) {
-      return undefined;
-    }
-
-    const recognition = new SpeechRecognition();
-    recognition.continuous = true;
-    recognition.interimResults = false;
-    recognition.lang = 'en-US';
-    recognition.maxAlternatives = 3;
-
-    recognition.onstart = () => {
-      setVoiceError(null);
-      setIsVoiceListening(true);
-    };
-
-    recognition.onresult = (event: SpeechRecognitionEvent) => {
-      for (let resultIndex = event.resultIndex; resultIndex < event.results.length; resultIndex += 1) {
-        const result = event.results[resultIndex];
-        if (!result.isFinal) {
-          continue;
-        }
-
-        const transcripts = Array.from({ length: result.length }, (_, index) => result[index].transcript);
-        const primaryTranscript = transcripts[0]?.trim();
-        if (primaryTranscript) {
-          setLastHeard(primaryTranscript);
-        }
-
-        const matchedCommand = transcripts
-          .map(transcript => normalizeTranscript(transcript))
-          .map(normalizedTranscript =>
-            VOICE_COMMANDS.find(command =>
-              command.phrases.some(phrase => phrase === normalizedTranscript)
-            )
-          )
-          .find(Boolean);
-
-        if (!matchedCommand) {
-          continue;
-        }
-
-        setLastCommand(matchedCommand.label);
-        commandHandlersRef.current[matchedCommand.action]();
-      }
-    };
-
-    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-      if (event.error === 'aborted' && !shouldKeepListeningRef.current) {
-        return;
-      }
-
-      if (event.error === 'no-speech') {
-        return;
-      }
-
-      shouldKeepListeningRef.current = false;
-      setIsVoiceEnabled(false);
-      setIsVoiceListening(false);
-      setVoiceError(getVoiceErrorMessage(event.error));
-    };
-
-    recognition.onend = () => {
-      setIsVoiceListening(false);
-
-      if (!shouldKeepListeningRef.current) {
-        setIsVoiceEnabled(false);
-        return;
-      }
-
-      try {
-        recognition.start();
-      } catch (error) {
-        shouldKeepListeningRef.current = false;
-        setIsVoiceEnabled(false);
-        setVoiceError(
-          error instanceof Error ? error.message : 'Voice recognition could not restart.'
-        );
-      }
-    };
-
-    recognitionRef.current = recognition;
-
-    if (!hasAttemptedInitialVoiceStartRef.current) {
-      const initialVoiceStartTimeout = window.setTimeout(() => {
-        if (recognitionRef.current === recognition && !hasAttemptedInitialVoiceStartRef.current) {
-          hasAttemptedInitialVoiceStartRef.current = true;
-          void requestMicrophonePermission();
-        }
-      }, 0);
-
-      return () => {
-        window.clearTimeout(initialVoiceStartTimeout);
-        shouldKeepListeningRef.current = false;
-        recognition.onstart = null;
-        recognition.onresult = null;
-        recognition.onerror = null;
-        recognition.onend = null;
-        recognition.abort();
-        recognitionRef.current = null;
-      };
-    }
-
-    return () => {
-      shouldKeepListeningRef.current = false;
-      recognition.onstart = null;
-      recognition.onresult = null;
-      recognition.onerror = null;
-      recognition.onend = null;
-      recognition.abort();
-      recognitionRef.current = null;
-    };
-  }, [isVoiceSupported]);
+  }, [animationsPaused, isHelpOpen, isVoiceEnabled, requestMicrophonePermission, setVoiceControlsEnabled, undoAutoAdvance]);
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 bg-canvas font-sans text-text relative">
@@ -514,15 +302,19 @@ const DeckView: React.FC = () => {
         goToNext={goToNext}
         goToPrev={goToPrev}
         isControlsHidden={isFooterHidden}
-        isFullscreen={isFullscreen}
         isVoiceEnabled={isVoiceEnabled}
         isVoiceListening={isVoiceListening}
         isVoiceSupported={isVoiceSupported}
+        isSpeechFollowEnabled={isSpeechFollowEnabled}
+        canUndoAutoAdvance={canUndoAutoAdvance}
+        lastAutoAdvance={lastAutoAdvance}
         lastCommand={lastCommand}
         lastHeard={lastHeard}
         openSpeakerNotesView={openSpeakerNotesView}
         slideCount={slides.length}
         toggleFullscreen={toggleFullscreen}
+        toggleSpeechFollow={() => setIsSpeechFollowEnabled(enabled => !enabled)}
+        undoAutoAdvance={undoAutoAdvance}
         voiceError={voiceError}
       />
       <HelpOverlay isOpen={isHelpOpen} onClose={closeHelp} sections={helpSections} />

@@ -50,6 +50,20 @@ Voice now asks for microphone permission when the deck loads and arms speech rec
 - `Zoom In`
 - `Zoom Out`
 
+Commands work regardless of speech-follow mode. `Follow speech: Off` is the default; enable it in the presentation controls only when you want matching cues to advance one slide automatically. Automatic transitions can be undone with `U` or `Undo auto-advance`.
+
+Speech-follow matching stays in the browser. Add explicit cues to the slide being introduced; slides without cues are never selected automatically:
+
+```tsx
+{
+  content: <ArchitectureSlide />,
+  speech: {
+    cues: ['system architecture', 'how the services connect'],
+  },
+  title: 'Architecture',
+}
+```
+
 ### Speaker Notes
 
 Slides can include optional speaker notes alongside the rendered slide component:

@@ -16,6 +16,9 @@ export interface DataPacket {
 export interface SlideDefinition {
   content: React.ReactNode;
   notes?: React.ReactNode[];
+  speech?: {
+    cues: string[];
+  };
   title?: string;
 }
 

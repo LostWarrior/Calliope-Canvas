@@ -3,36 +3,48 @@ import { NotesIcon } from './Icons';
 import ThemedButton from './ThemedButton';
 
 interface FooterProps {
+  canUndoAutoAdvance: boolean;
   currentSlide: number;
   isControlsHidden: boolean;
-  isFullscreen: boolean;
+  isSpeechFollowEnabled: boolean;
   isVoiceEnabled: boolean;
   isVoiceListening: boolean;
   isVoiceSupported: boolean;
   lastCommand: string | null;
+  lastAutoAdvance: {
+    cue: string;
+    fromSlide: number;
+    toSlide: number;
+  } | null;
   lastHeard: string | null;
   openSpeakerNotesView: () => void;
   slideCount: number;
   goToPrev: () => void;
   goToNext: () => void;
   toggleFullscreen: () => void;
+  toggleSpeechFollow: () => void;
+  undoAutoAdvance: () => void;
   voiceError: string | null;
 }
 
 const Footer: React.FC<FooterProps> = ({
+  canUndoAutoAdvance,
   currentSlide,
   goToNext,
   goToPrev,
   isControlsHidden,
-  isFullscreen,
+  isSpeechFollowEnabled,
   isVoiceEnabled,
   isVoiceListening,
   isVoiceSupported,
   lastCommand,
+  lastAutoAdvance,
   lastHeard,
   openSpeakerNotesView,
   slideCount,
   toggleFullscreen,
+  toggleSpeechFollow,
+  undoAutoAdvance,
   voiceError,
 }) => {
   return (
@@ -70,6 +82,24 @@ const Footer: React.FC<FooterProps> = ({
             >
               ⛶
             </ThemedButton>
+            <label
+              className="inline-flex items-center gap-2 rounded-md bg-secondary px-3 py-1.5 text-sm font-semibold text-text"
+              title="When enabled, matching phrases can advance to the next slide automatically."
+            >
+              <input
+                type="checkbox"
+                checked={isSpeechFollowEnabled}
+                onChange={toggleSpeechFollow}
+              />
+              <span>Follow speech: {isSpeechFollowEnabled ? 'On' : 'Off'}</span>
+            </label>
+            <ThemedButton
+              onClick={undoAutoAdvance}
+              disabled={!canUndoAutoAdvance}
+              title="Undo auto-advance (U)"
+            >
+              Undo auto-advance
+            </ThemedButton>
           </div>
           <span className={`absolute inset-0 flex items-center justify-end transition-opacity duration-300 pointer-events-none font-mono text-sm text-muted ${isControlsHidden ? 'opacity-60' : 'opacity-0'}`}>
             {currentSlide + 1} / {slideCount}
@@ -77,10 +107,10 @@ const Footer: React.FC<FooterProps> = ({
         </div>
       </div>
 
-      {!isFullscreen && !isControlsHidden && (
+      {!isControlsHidden && (
         <div className="flex flex-col gap-1">
           <div className="text-sm text-muted">
-            Voice asks for microphone permission on load. Try: &quot;Next Slide&quot;, &quot;Let&apos;s go back&quot;, &quot;Start Animation&quot;, &quot;Stop Animation&quot;, &quot;Zoom In&quot;, &quot;Zoom Out&quot;
+            Voice asks for microphone permission on load. Commands always work; Follow speech only auto-advances to the next slide when a configured cue matches.
           </div>
           <div className="text-sm text-muted">
             {voiceError ? (
@@ -89,11 +119,16 @@ const Footer: React.FC<FooterProps> = ({
               <span>
                 Voice {isVoiceListening ? 'listening' : isVoiceEnabled ? 'armed' : 'off'}
                 {lastCommand ? ` • Last command: ${lastCommand}` : ''}
-                {!lastCommand && lastHeard ? ` • Heard: ${lastHeard}` : ''}
               </span>
             ) : (
               <span>Voice commands are not available in this browser.</span>
             )}
+          </div>
+          <div className="text-sm text-muted">
+            {lastHeard ? `Last transcript: ${lastHeard}` : 'Last transcript: none'}
+            {lastAutoAdvance
+              ? ` • Last auto-transition: ${lastAutoAdvance.fromSlide + 1} → ${lastAutoAdvance.toSlide + 1} • Cue: ${lastAutoAdvance.cue}`
+              : ' • Last auto-transition: none'}
           </div>
         </div>
       )}

@@ -21,12 +21,24 @@ export const VOICE_COMMANDS = [
   { action: 'zoomIn', label: 'Zoom In', phrases: ['zoom in'] },
 ];
 
+/**
+ * @param {string[]} normalizedTranscripts
+ * @returns {VoiceCommand | undefined}
+ */
+export const matchVoiceCommand = normalizedTranscripts =>
+  normalizedTranscripts
+    .map(transcript =>
+      VOICE_COMMANDS.find(command => command.phrases.some(phrase => phrase === transcript))
+    )
+    .find(Boolean);
+
 const HELP_SHORTCUT_ITEMS = [
   { shortcut: 'ArrowRight / ArrowDown', description: 'Next slide' },
   { shortcut: 'ArrowLeft / ArrowUp', description: 'Previous slide' },
   { shortcut: 'Space', description: 'Pause or resume animations' },
   { shortcut: 'F', description: 'Toggle fullscreen' },
   { shortcut: 'V', description: 'Toggle voice recognition' },
+  { shortcut: 'U', description: 'Undo the last automatic slide advance' },
   { shortcut: '+ / -', description: 'Zoom in or out' },
   { shortcut: '?', description: 'Open or close this help panel' },
   { shortcut: 'Esc', description: 'Close this help panel' },
