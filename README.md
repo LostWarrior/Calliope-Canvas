@@ -152,4 +152,4 @@ Calliope-Canvas/
 ```
 ## Contributing
 
-All contributions are welcome! Please open an issue or submit a pull request.
+All contributions are welcome! For ideas on things to contribute, please look at wishlist.md. Please open an issue or submit a pull request.
