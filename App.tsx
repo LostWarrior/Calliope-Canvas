@@ -8,6 +8,8 @@ import HelpOverlay from './components/HelpOverlay';
 import { getHelpShortcutSections, getSlideTransitionClass, isPresentationShortcutAllowed } from './presentationBehavior';
 import { useSpeechRecognition, type FinalSpeechRecognitionResult } from './hooks/useSpeechRecognition';
 import { useSpeechFollow } from './hooks/useSpeechFollow';
+import ThemedButton from './components/ThemedButton';
+import { PresentationIcon } from './components/Icons';
 import TitleSlide from './slides/TitleSlide';
 import PlaceholderSlide from './slides/PlaceholderSlide';
 import { isThemeName } from './theme';
@@ -53,6 +55,7 @@ const DeckView: React.FC = () => {
   const [animationsPaused, setAnimationsPaused] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isFooterHidden, setIsFooterHidden] = useState(false);
+  const [isPresentationMode, setIsPresentationMode] = useState(false);
   const { setTheme, theme } = useTheme();
 
   const currentSlideRef = useRef(currentSlide);
@@ -106,6 +109,10 @@ const DeckView: React.FC = () => {
     setAnimationsPaused(true);
   };
 
+  const togglePresentationMode = () => {
+    setIsPresentationMode(prev => !prev);
+  };
+
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen();
@@ -115,6 +122,15 @@ const DeckView: React.FC = () => {
       }
     }
   };
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFooterHidden(Boolean(document.fullscreenElement));
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
 
   const openSpeakerNotesView = () => {
     const speakerNotesUrl = new URL(window.location.href);
@@ -198,7 +214,6 @@ const DeckView: React.FC = () => {
     onFinalResult: result => speechFollowResultHandlerRef.current(result),
   });
   const {
-    canUndoAutoAdvance,
     isSpeechFollowEnabled,
     lastAutoAdvance,
     lastCommand,
@@ -252,6 +267,9 @@ const DeckView: React.FC = () => {
       } else if (e.key === 'h' || e.key === 'H') {
         e.preventDefault();
         setIsFooterHidden(prev => !prev);
+      } else if (e.key === 'p' || e.key === 'P') {
+        e.preventDefault();
+        togglePresentationMode();
       } else if (e.key === '+') {
         e.preventDefault();
         zoomIn();
@@ -285,6 +303,15 @@ const DeckView: React.FC = () => {
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 bg-canvas font-sans text-text relative">
       <div className="progress-bar w-full" style={{ width: `${((currentSlide + 1) / slides.length) * 100}%` }}></div>
+      <ThemedButton
+        onClick={togglePresentationMode}
+        variant={isPresentationMode ? 'primary' : 'ghost'}
+        title="Toggle presentation mode (P)"
+        aria-pressed={isPresentationMode}
+        className="fixed top-4 right-4 z-30"
+      >
+        <PresentationIcon className="h-5 w-5" />
+      </ThemedButton>
       <main className="relative z-0 w-full max-w-7xl flex-grow flex flex-col items-center justify-center">
         <div
           className={`presentation-stage w-full ${animationsPaused ? 'animations-paused' : ''}`}
@@ -306,7 +333,7 @@ const DeckView: React.FC = () => {
         isVoiceListening={isVoiceListening}
         isVoiceSupported={isVoiceSupported}
         isSpeechFollowEnabled={isSpeechFollowEnabled}
-        canUndoAutoAdvance={canUndoAutoAdvance}
+        isPresentationMode={isPresentationMode}
         lastAutoAdvance={lastAutoAdvance}
         lastCommand={lastCommand}
         lastHeard={lastHeard}
@@ -314,7 +341,6 @@ const DeckView: React.FC = () => {
         slideCount={slides.length}
         toggleFullscreen={toggleFullscreen}
         toggleSpeechFollow={() => setIsSpeechFollowEnabled(enabled => !enabled)}
-        undoAutoAdvance={undoAutoAdvance}
         voiceError={voiceError}
       />
       <HelpOverlay isOpen={isHelpOpen} onClose={closeHelp} sections={helpSections} />
