@@ -1,368 +1,391 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme inline {
+  --color-canvas: rgb(var(--theme-canvas));
+  --color-surface: rgb(var(--theme-surface));
+  --color-elevated: rgb(var(--theme-elevated));
+  --color-text: rgb(var(--theme-text));
+  --color-muted: rgb(var(--theme-muted));
+  --color-border: rgb(var(--theme-border));
+  --color-primary: rgb(var(--theme-primary));
+  --color-secondary: rgb(var(--theme-secondary));
+  --color-accent: rgb(var(--theme-accent));
+  --color-danger: rgb(var(--theme-danger));
+  --color-focus: rgb(var(--theme-focus));
+}
+
+@utility duration-motion {
+  transition-duration: var(--duration-motion);
+}
+
+@layer base {
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}
 
 :root,
 [data-theme='dark'] {
   color-scheme: dark;
-  --color-canvas: 15 23 42;
-  --color-surface: 30 41 59;
-  --color-elevated: 51 65 85;
-  --color-text: 241 245 249;
-  --color-muted: 148 163 184;
-  --color-border: 71 85 105;
-  --color-primary: 56 189 248;
-  --color-secondary: 51 65 85;
-  --color-accent: 168 85 247;
-  --color-danger: 251 113 133;
-  --color-focus: 125 211 252;
+  --theme-canvas: 15 23 42;
+  --theme-surface: 30 41 59;
+  --theme-elevated: 51 65 85;
+  --theme-text: 241 245 249;
+  --theme-muted: 148 163 184;
+  --theme-border: 71 85 105;
+  --theme-primary: 56 189 248;
+  --theme-secondary: 51 65 85;
+  --theme-accent: 168 85 247;
+  --theme-danger: 251 113 133;
+  --theme-focus: 125 211 252;
   --duration-motion: 180ms;
 }
 
 [data-theme='light'] {
   color-scheme: light;
-  --color-canvas: 255 255 255;
-  --color-surface: 248 250 252;
-  --color-elevated: 226 232 240;
-  --color-text: 15 23 42;
-  --color-muted: 71 85 105;
-  --color-border: 203 213 225;
-  --color-primary: 3 105 161;
-  --color-secondary: 226 232 240;
-  --color-accent: 124 58 237;
-  --color-danger: 225 29 72;
-  --color-focus: 14 165 233;
+  --theme-canvas: 255 255 255;
+  --theme-surface: 248 250 252;
+  --theme-elevated: 226 232 240;
+  --theme-text: 15 23 42;
+  --theme-muted: 71 85 105;
+  --theme-border: 203 213 225;
+  --theme-primary: 3 105 161;
+  --theme-secondary: 226 232 240;
+  --theme-accent: 124 58 237;
+  --theme-danger: 225 29 72;
+  --theme-focus: 14 165 233;
 }
 
 [data-theme='contrast'] {
   color-scheme: dark;
-  --color-canvas: 0 0 0;
-  --color-surface: 9 9 11;
-  --color-elevated: 39 39 42;
-  --color-text: 255 255 255;
-  --color-muted: 212 212 216;
-  --color-border: 255 255 255;
-  --color-primary: 250 204 21;
-  --color-secondary: 39 39 42;
-  --color-accent: 34 211 238;
-  --color-danger: 248 113 113;
-  --color-focus: 250 204 21;
+  --theme-canvas: 0 0 0;
+  --theme-surface: 9 9 11;
+  --theme-elevated: 39 39 42;
+  --theme-text: 255 255 255;
+  --theme-muted: 212 212 216;
+  --theme-border: 255 255 255;
+  --theme-primary: 250 204 21;
+  --theme-secondary: 39 39 42;
+  --theme-accent: 34 211 238;
+  --theme-danger: 248 113 113;
+  --theme-focus: 250 204 21;
 }
 
 
 [data-theme='sunset'] {
   color-scheme: dark;
-  --color-canvas: 30 16 35;
-  --color-surface: 45 24 52;
-  --color-elevated: 66 36 74;
-  --color-text: 253 236 230;
-  --color-muted: 214 170 180;
-  --color-border: 92 52 100;
-  --color-primary: 251 146 60;
-  --color-secondary: 66 36 74;
-  --color-accent: 244 114 182;
-  --color-danger: 248 113 113;
-  --color-focus: 253 186 116;
+  --theme-canvas: 30 16 35;
+  --theme-surface: 45 24 52;
+  --theme-elevated: 66 36 74;
+  --theme-text: 253 236 230;
+  --theme-muted: 214 170 180;
+  --theme-border: 92 52 100;
+  --theme-primary: 251 146 60;
+  --theme-secondary: 66 36 74;
+  --theme-accent: 244 114 182;
+  --theme-danger: 248 113 113;
+  --theme-focus: 253 186 116;
 }
 
 [data-theme='forest'] {
   color-scheme: dark;
-  --color-canvas: 16 24 20;
-  --color-surface: 24 36 30;
-  --color-elevated: 38 56 46;
-  --color-text: 236 245 238;
-  --color-muted: 156 180 164;
-  --color-border: 58 82 68;
-  --color-primary: 52 211 153;
-  --color-secondary: 38 56 46;
-  --color-accent: 251 191 36;
-  --color-danger: 248 113 113;
-  --color-focus: 110 231 183;
+  --theme-canvas: 16 24 20;
+  --theme-surface: 24 36 30;
+  --theme-elevated: 38 56 46;
+  --theme-text: 236 245 238;
+  --theme-muted: 156 180 164;
+  --theme-border: 58 82 68;
+  --theme-primary: 52 211 153;
+  --theme-secondary: 38 56 46;
+  --theme-accent: 251 191 36;
+  --theme-danger: 248 113 113;
+  --theme-focus: 110 231 183;
 }
 
 [data-theme='sepia'] {
   color-scheme: light;
-  --color-canvas: 244 236 216;
-  --color-surface: 250 244 230;
-  --color-elevated: 232 220 196;
-  --color-text: 67 52 34;
-  --color-muted: 120 98 72;
-  --color-border: 214 196 164;
-  --color-primary: 154 82 30;
-  --color-secondary: 232 220 196;
-  --color-accent: 37 99 105;
-  --color-danger: 185 28 28;
-  --color-focus: 180 100 40;
+  --theme-canvas: 244 236 216;
+  --theme-surface: 250 244 230;
+  --theme-elevated: 232 220 196;
+  --theme-text: 67 52 34;
+  --theme-muted: 120 98 72;
+  --theme-border: 214 196 164;
+  --theme-primary: 154 82 30;
+  --theme-secondary: 232 220 196;
+  --theme-accent: 37 99 105;
+  --theme-danger: 185 28 28;
+  --theme-focus: 180 100 40;
 }
 
 [data-theme='stormy-morning'] {
   color-scheme: dark;
-  --color-canvas: 49 64 79;
-  --color-surface: 61 75 90;
-  --color-elevated: 74 88 102;
-  --color-text: 243 249 254;
-  --color-muted: 207 214 219;
-  --color-border: 107 120 132;
-  --color-primary: 141 192 243;
-  --color-secondary: 74 88 102;
-  --color-accent: 109 140 170;
-  --color-danger: 252 133 150;
-  --color-focus: 170 208 246;
+  --theme-canvas: 49 64 79;
+  --theme-surface: 61 75 90;
+  --theme-elevated: 74 88 102;
+  --theme-text: 243 249 254;
+  --theme-muted: 207 214 219;
+  --theme-border: 107 120 132;
+  --theme-primary: 141 192 243;
+  --theme-secondary: 74 88 102;
+  --theme-accent: 109 140 170;
+  --theme-danger: 252 133 150;
+  --theme-focus: 170 208 246;
 }
 
 [data-theme='ocean-tide'] {
   color-scheme: dark;
-  --color-canvas: 0 66 66;
-  --color-surface: 13 77 77;
-  --color-elevated: 28 90 90;
-  --color-text: 214 248 248;
-  --color-muted: 182 212 212;
-  --color-border: 64 121 121;
-  --color-primary: 0 209 209;
-  --color-secondary: 28 90 90;
-  --color-accent: 111 124 225;
-  --color-danger: 251 124 143;
-  --color-focus: 64 220 220;
+  --theme-canvas: 0 66 66;
+  --theme-surface: 13 77 77;
+  --theme-elevated: 28 90 90;
+  --theme-text: 214 248 248;
+  --theme-muted: 182 212 212;
+  --theme-border: 64 121 121;
+  --theme-primary: 0 209 209;
+  --theme-secondary: 28 90 90;
+  --theme-accent: 111 124 225;
+  --theme-danger: 251 124 143;
+  --theme-focus: 64 220 220;
 }
 
 [data-theme='space-berries'] {
   color-scheme: dark;
-  --color-canvas: 117 21 59;
-  --color-surface: 125 34 70;
-  --color-elevated: 135 50 84;
-  --color-text: 255 242 249;
-  --color-muted: 225 198 210;
-  --color-border: 158 87 116;
-  --color-primary: 255 184 220;
-  --color-secondary: 135 50 84;
-  --color-accent: 251 106 43;
-  --color-danger: 251 130 148;
-  --color-focus: 255 202 229;
+  --theme-canvas: 117 21 59;
+  --theme-surface: 125 34 70;
+  --theme-elevated: 135 50 84;
+  --theme-text: 255 242 249;
+  --theme-muted: 225 198 210;
+  --theme-border: 158 87 116;
+  --theme-primary: 255 184 220;
+  --theme-secondary: 135 50 84;
+  --theme-accent: 251 106 43;
+  --theme-danger: 251 130 148;
+  --theme-focus: 255 202 229;
 }
 
 [data-theme='desert-dusk'] {
   color-scheme: dark;
-  --color-canvas: 104 39 95;
-  --color-surface: 113 52 105;
-  --color-elevated: 124 67 116;
-  --color-text: 255 255 255;
-  --color-muted: 224 210 221;
-  --color-border: 149 104 143;
-  --color-primary: 240 176 151;
-  --color-secondary: 124 67 116;
-  --color-accent: 183 124 117;
-  --color-danger: 252 139 155;
-  --color-focus: 244 196 177;
+  --theme-canvas: 104 39 95;
+  --theme-surface: 113 52 105;
+  --theme-elevated: 124 67 116;
+  --theme-text: 255 255 255;
+  --theme-muted: 224 210 221;
+  --theme-border: 149 104 143;
+  --theme-primary: 240 176 151;
+  --theme-secondary: 124 67 116;
+  --theme-accent: 183 124 117;
+  --theme-danger: 252 139 155;
+  --theme-focus: 244 196 177;
 }
 
 [data-theme='night-sands'] {
   color-scheme: dark;
-  --color-canvas: 74 64 30;
-  --color-surface: 85 75 43;
-  --color-elevated: 97 88 58;
-  --color-text: 254 252 244;
-  --color-muted: 218 215 204;
-  --color-border: 128 120 94;
-  --color-primary: 203 189 148;
-  --color-secondary: 97 88 58;
-  --color-accent: 148 141 119;
-  --color-danger: 252 139 155;
-  --color-focus: 216 206 175;
+  --theme-canvas: 74 64 30;
+  --theme-surface: 85 75 43;
+  --theme-elevated: 97 88 58;
+  --theme-text: 254 252 244;
+  --theme-muted: 218 215 204;
+  --theme-border: 128 120 94;
+  --theme-primary: 203 189 148;
+  --theme-secondary: 97 88 58;
+  --theme-accent: 148 141 119;
+  --theme-danger: 252 139 155;
+  --theme-focus: 216 206 175;
 }
 
 [data-theme='lavender-fields'] {
   color-scheme: light;
-  --color-canvas: 193 191 255;
-  --color-surface: 218 217 255;
-  --color-elevated: 180 177 239;
-  --color-text: 33 17 57;
-  --color-muted: 68 58 97;
-  --color-border: 164 160 219;
-  --color-primary: 96 50 116;
-  --color-secondary: 180 177 239;
-  --color-accent: 113 111 64;
-  --color-danger: 163 15 52;
-  --color-focus: 72 38 87;
+  --theme-canvas: 193 191 255;
+  --theme-surface: 218 217 255;
+  --theme-elevated: 180 177 239;
+  --theme-text: 33 17 57;
+  --theme-muted: 68 58 97;
+  --theme-border: 164 160 219;
+  --theme-primary: 96 50 116;
+  --theme-secondary: 180 177 239;
+  --theme-accent: 113 111 64;
+  --theme-danger: 163 15 52;
+  --theme-focus: 72 38 87;
 }
 
 [data-theme='winter-chill'] {
   color-scheme: light;
-  --color-canvas: 183 228 234;
-  --color-surface: 212 239 242;
-  --color-elevated: 169 213 219;
-  --color-text: 11 46 50;
-  --color-muted: 52 84 86;
-  --color-border: 152 195 201;
-  --color-primary: 56 88 91;
-  --color-secondary: 169 213 219;
-  --color-accent: 107 127 130;
-  --color-danger: 190 18 60;
-  --color-focus: 42 66 68;
+  --theme-canvas: 183 228 234;
+  --theme-surface: 212 239 242;
+  --theme-elevated: 169 213 219;
+  --theme-text: 11 46 50;
+  --theme-muted: 52 84 86;
+  --theme-border: 152 195 201;
+  --theme-primary: 56 88 91;
+  --theme-secondary: 169 213 219;
+  --theme-accent: 107 127 130;
+  --theme-danger: 190 18 60;
+  --theme-focus: 42 66 68;
 }
 
 [data-theme='italian-leather'] {
   color-scheme: dark;
-  --color-canvas: 30 24 19;
-  --color-surface: 52 42 33;
-  --color-elevated: 70 56 45;
-  --color-text: 212 195 172;
-  --color-muted: 181 171 157;
-  --color-border: 102 80 65;
-  --color-primary: 202 101 80;
-  --color-secondary: 70 56 45;
-  --color-accent: 134 126 50;
-  --color-danger: 251 113 133;
-  --color-focus: 218 147 132;
+  --theme-canvas: 30 24 19;
+  --theme-surface: 52 42 33;
+  --theme-elevated: 70 56 45;
+  --theme-text: 212 195 172;
+  --theme-muted: 181 171 157;
+  --theme-border: 102 80 65;
+  --theme-primary: 202 101 80;
+  --theme-secondary: 70 56 45;
+  --theme-accent: 134 126 50;
+  --theme-danger: 251 113 133;
+  --theme-focus: 218 147 132;
 }
 
 [data-theme='above-the-surface'] {
   color-scheme: light;
-  --color-canvas: 208 212 199;
-  --color-surface: 227 229 221;
-  --color-elevated: 192 198 186;
-  --color-text: 8 43 40;
-  --color-muted: 55 76 71;
-  --color-border: 172 182 170;
-  --color-primary: 16 87 80;
-  --color-secondary: 192 198 186;
-  --color-accent: 19 133 72;
-  --color-danger: 179 17 56;
-  --color-focus: 16 87 80;
+  --theme-canvas: 208 212 199;
+  --theme-surface: 227 229 221;
+  --theme-elevated: 192 198 186;
+  --theme-text: 8 43 40;
+  --theme-muted: 55 76 71;
+  --theme-border: 172 182 170;
+  --theme-primary: 16 87 80;
+  --theme-secondary: 192 198 186;
+  --theme-accent: 19 133 72;
+  --theme-danger: 179 17 56;
+  --theme-focus: 16 87 80;
 }
 
 [data-theme='eggs-for-breakfast'] {
   color-scheme: light;
-  --color-canvas: 217 228 240;
-  --color-surface: 234 232 227;
-  --color-elevated: 203 214 225;
-  --color-text: 48 49 48;
-  --color-muted: 79 82 85;
-  --color-border: 187 191 187;
-  --color-primary: 50 89 132;
-  --color-secondary: 203 214 225;
-  --color-accent: 175 118 31;
-  --color-danger: 190 18 60;
-  --color-focus: 50 89 132;
+  --theme-canvas: 217 228 240;
+  --theme-surface: 234 232 227;
+  --theme-elevated: 203 214 225;
+  --theme-text: 48 49 48;
+  --theme-muted: 79 82 85;
+  --theme-border: 187 191 187;
+  --theme-primary: 50 89 132;
+  --theme-secondary: 203 214 225;
+  --theme-accent: 175 118 31;
+  --theme-danger: 190 18 60;
+  --theme-focus: 50 89 132;
 }
 
 [data-theme='graphite'] {
   color-scheme: light;
-  --color-canvas: 241 241 241;
-  --color-surface: 247 247 247;
-  --color-elevated: 224 224 224;
-  --color-text: 34 34 34;
-  --color-muted: 90 90 90;
-  --color-border: 204 204 204;
-  --color-primary: 34 34 34;
-  --color-secondary: 224 224 224;
-  --color-accent: 85 85 85;
-  --color-danger: 190 18 60;
-  --color-focus: 34 34 34;
+  --theme-canvas: 241 241 241;
+  --theme-surface: 247 247 247;
+  --theme-elevated: 224 224 224;
+  --theme-text: 34 34 34;
+  --theme-muted: 90 90 90;
+  --theme-border: 204 204 204;
+  --theme-primary: 34 34 34;
+  --theme-secondary: 224 224 224;
+  --theme-accent: 85 85 85;
+  --theme-danger: 190 18 60;
+  --theme-focus: 34 34 34;
 }
 
 [data-theme='admiral'] {
   color-scheme: light;
-  --color-canvas: 255 255 255;
-  --color-surface: 255 255 255;
-  --color-elevated: 235 238 242;
-  --color-text: 0 43 91;
-  --color-muted: 71 101 132;
-  --color-border: 209 217 225;
-  --color-primary: 0 43 91;
-  --color-secondary: 235 238 242;
-  --color-accent: 230 57 70;
-  --color-danger: 190 18 60;
-  --color-focus: 0 43 91;
+  --theme-canvas: 255 255 255;
+  --theme-surface: 255 255 255;
+  --theme-elevated: 235 238 242;
+  --theme-text: 0 43 91;
+  --theme-muted: 71 101 132;
+  --theme-border: 209 217 225;
+  --theme-primary: 0 43 91;
+  --theme-secondary: 235 238 242;
+  --theme-accent: 230 57 70;
+  --theme-danger: 190 18 60;
+  --theme-focus: 0 43 91;
 }
 
 [data-theme='sorbet'] {
   color-scheme: light;
-  --color-canvas: 255 252 216;
-  --color-surface: 255 253 232;
-  --color-elevated: 242 235 207;
-  --color-text: 96 40 102;
-  --color-muted: 118 85 112;
-  --color-border: 226 214 195;
-  --color-primary: 33 115 85;
-  --color-secondary: 242 235 207;
-  --color-accent: 246 98 0;
-  --color-danger: 190 18 60;
-  --color-focus: 33 115 85;
+  --theme-canvas: 255 252 216;
+  --theme-surface: 255 253 232;
+  --theme-elevated: 242 235 207;
+  --theme-text: 96 40 102;
+  --theme-muted: 118 85 112;
+  --theme-border: 226 214 195;
+  --theme-primary: 33 115 85;
+  --theme-secondary: 242 235 207;
+  --theme-accent: 246 98 0;
+  --theme-danger: 190 18 60;
+  --theme-focus: 33 115 85;
 }
 
 [data-theme='woodland'] {
   color-scheme: dark;
-  --color-canvas: 32 49 0;
-  --color-surface: 42 60 7;
-  --color-elevated: 54 73 15;
-  --color-text: 204 230 112;
-  --color-muted: 173 192 113;
-  --color-border: 84 103 34;
-  --color-primary: 162 197 35;
-  --color-secondary: 54 73 15;
-  --color-accent: 176 95 55;
-  --color-danger: 251 113 133;
-  --color-focus: 185 212 90;
+  --theme-canvas: 32 49 0;
+  --theme-surface: 42 60 7;
+  --theme-elevated: 54 73 15;
+  --theme-text: 204 230 112;
+  --theme-muted: 173 192 113;
+  --theme-border: 84 103 34;
+  --theme-primary: 162 197 35;
+  --theme-secondary: 54 73 15;
+  --theme-accent: 176 95 55;
+  --theme-danger: 251 113 133;
+  --theme-focus: 185 212 90;
 }
 
 [data-theme='seaglass'] {
   color-scheme: light;
-  --color-canvas: 236 255 249;
-  --color-surface: 244 255 251;
-  --color-elevated: 217 240 235;
-  --color-text: 0 71 71;
-  --color-muted: 58 103 102;
-  --color-border: 194 222 217;
-  --color-primary: 0 114 114;
-  --color-secondary: 217 240 235;
-  --color-accent: 0 161 163;
-  --color-danger: 190 18 60;
-  --color-focus: 0 114 114;
+  --theme-canvas: 236 255 249;
+  --theme-surface: 244 255 251;
+  --theme-elevated: 217 240 235;
+  --theme-text: 0 71 71;
+  --theme-muted: 58 103 102;
+  --theme-border: 194 222 217;
+  --theme-primary: 0 114 114;
+  --theme-secondary: 217 240 235;
+  --theme-accent: 0 161 163;
+  --theme-danger: 190 18 60;
+  --theme-focus: 0 114 114;
 }
 
 [data-theme='gilded-night'] {
   color-scheme: dark;
-  --color-canvas: 10 17 114;
-  --color-surface: 24 31 121;
-  --color-elevated: 41 47 129;
-  --color-text: 248 244 227;
-  --color-muted: 177 176 193;
-  --color-border: 81 85 148;
-  --color-primary: 255 215 0;
-  --color-secondary: 41 47 129;
-  --color-accent: 248 244 227;
-  --color-danger: 251 113 133;
-  --color-focus: 255 225 64;
+  --theme-canvas: 10 17 114;
+  --theme-surface: 24 31 121;
+  --theme-elevated: 41 47 129;
+  --theme-text: 248 244 227;
+  --theme-muted: 177 176 193;
+  --theme-border: 81 85 148;
+  --theme-primary: 255 215 0;
+  --theme-secondary: 41 47 129;
+  --theme-accent: 248 244 227;
+  --theme-danger: 251 113 133;
+  --theme-focus: 255 225 64;
 }
 
 [data-theme='neon-orchid'] {
   color-scheme: dark;
-  --color-canvas: 45 0 78;
-  --color-surface: 56 11 87;
-  --color-elevated: 68 24 98;
-  --color-text: 224 187 228;
-  --color-muted: 184 151 195;
-  --color-border: 99 56 123;
-  --color-primary: 255 74 164;
-  --color-secondary: 68 24 98;
-  --color-accent: 162 0 231;
-  --color-danger: 251 113 133;
-  --color-focus: 255 119 187;
+  --theme-canvas: 45 0 78;
+  --theme-surface: 56 11 87;
+  --theme-elevated: 68 24 98;
+  --theme-text: 224 187 228;
+  --theme-muted: 184 151 195;
+  --theme-border: 99 56 123;
+  --theme-primary: 255 74 164;
+  --theme-secondary: 68 24 98;
+  --theme-accent: 162 0 231;
+  --theme-danger: 251 113 133;
+  --theme-focus: 255 119 187;
 }
 
 [data-theme='ember'] {
   color-scheme: light;
-  --color-canvas: 242 242 242;
-  --color-surface: 247 247 247;
-  --color-elevated: 227 227 227;
-  --color-text: 51 51 51;
-  --color-muted: 91 91 91;
-  --color-border: 208 208 208;
-  --color-primary: 189 33 0;
-  --color-secondary: 227 227 227;
-  --color-accent: 255 72 33;
-  --color-danger: 190 18 60;
-  --color-focus: 189 33 0;
+  --theme-canvas: 242 242 242;
+  --theme-surface: 247 247 247;
+  --theme-elevated: 227 227 227;
+  --theme-text: 51 51 51;
+  --theme-muted: 91 91 91;
+  --theme-border: 208 208 208;
+  --theme-primary: 189 33 0;
+  --theme-secondary: 227 227 227;
+  --theme-accent: 255 72 33;
+  --theme-danger: 190 18 60;
+  --theme-focus: 189 33 0;
 }
 
 body {
@@ -452,8 +475,8 @@ body {
   height: 3px;
   background: linear-gradient(
     to right,
-    rgb(var(--color-primary)),
-    rgb(var(--color-accent))
+    rgb(var(--theme-primary)),
+    rgb(var(--theme-accent))
   );
 }
 

@@ -14,9 +14,9 @@ const TitleSlide: React.FC = () => {
           role="img"
           aria-label="Calliope Canvas logo"
           style={LOGO_MASK_STYLE}
-          className="mb-8 h-36 w-40 bg-gradient-to-r from-primary to-accent"
+          className="mb-8 h-36 w-40 bg-linear-to-r from-primary to-accent"
         />
-        <h1 className="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">
+        <h1 className="text-6xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-primary to-accent">
             Calliope Canvas
         </h1>
         <p className="mt-4 text-2xl text-muted">

@@ -45,7 +45,7 @@ const HelpOverlay: React.FC<HelpOverlayProps> = ({ isOpen, onClose, sections }) 
         className="help-modal-panel relative w-full max-w-4xl overflow-hidden rounded-3xl border border-border bg-canvas/85 p-6 text-text shadow-[0_30px_120px_rgb(0_0_0_/_0.35)] ring-1 ring-border sm:p-8"
         onClick={event => event.stopPropagation()}
       >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgb(var(--color-primary)_/_0.18),_transparent_40%),radial-gradient(circle_at_top_right,_rgb(var(--color-accent)_/_0.16),_transparent_42%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgb(var(--theme-primary)_/_0.18),_transparent_40%),radial-gradient(circle_at_top_right,_rgb(var(--theme-accent)_/_0.16),_transparent_42%)]" />
 
         <div className="relative flex items-start justify-between gap-4">
           <div>

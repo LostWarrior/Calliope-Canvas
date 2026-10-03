@@ -24,7 +24,7 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ label = 'Theme', onThemeC
       <select
         value={theme}
         onChange={handleThemeChange}
-        className="rounded-md border border-border bg-surface px-2.5 py-1.5 text-sm font-semibold text-text outline-none transition-colors duration-motion hover:bg-elevated focus-visible:ring-2 focus-visible:ring-focus"
+        className="rounded-md border border-border bg-surface px-2.5 py-1.5 text-sm font-semibold text-text outline-hidden transition-colors duration-motion hover:bg-elevated focus-visible:ring-2 focus-visible:ring-focus"
       >
         {THEME_OPTIONS.map(option => (
           <option key={option.name} value={option.name}>
