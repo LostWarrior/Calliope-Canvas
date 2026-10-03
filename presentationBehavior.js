@@ -81,7 +81,7 @@ export const getHelpShortcutSections = () => [
         shortcut: command.label,
         description: command.phrases.join(' | '),
       })),
-      { shortcut: 'Follow speech (mic button)', description: 'Advance automatically when you say a slide’s cue' },
+      { shortcut: 'Auto advance (speech bubble button)', description: 'Advance automatically when you say a slide’s cue' },
     ],
   },
 ];

@@ -3,11 +3,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import Footer from './components/Footer';
 import { ThemeProvider, useTheme } from './components/ThemeProvider';
 import type { SlideDefinition, VoiceAction } from './types';
-import { isSpeakerNotesRoute, SpeakerNotesView, SPEAKER_NOTES_QUERY_PARAM, SPEAKER_NOTES_CHANNEL, postSpeakerNotesState, isSpeakerNotesMessage } from './SpeakerNotes';
+import { isSpeakerNotesRoute, SpeakerNotesView, SPEAKER_NOTES_QUERY_PARAM, SPEAKER_NOTES_CHANNEL, postSpeakerNotesDeckClosed, postSpeakerNotesState, isSpeakerNotesMessage, type DeckState } from './SpeakerNotes';
 import HelpOverlay from './components/HelpOverlay';
 import { getHelpShortcutSections, getSlideTransitionClass, isPresentationShortcutAllowed } from './presentationBehavior';
 import { useSpeechRecognition, type FinalSpeechRecognitionResult } from './hooks/useSpeechRecognition';
 import { useSpeechFollow } from './hooks/useSpeechFollow';
+import { useTranscriptRecording } from './hooks/useTranscriptRecording';
 import ThemedButton from './components/ThemedButton';
 import { PresentationIcon } from './components/Icons';
 import TitleSlide from './slides/TitleSlide';
@@ -59,7 +60,7 @@ const DeckView: React.FC = () => {
   const { setTheme, theme } = useTheme();
 
   const currentSlideRef = useRef(currentSlide);
-  const themeRef = useRef(theme);
+  const deckStateRef = useRef<DeckState>({ canRecord: false, currentSlide, isRecording: false, theme, transcript: [] });
   const speakerNotesChannelRef = useRef<BroadcastChannel | null>(null);
   const speechFollowResultHandlerRef = useRef<(result: FinalSpeechRecognitionResult) => void>(() => undefined);
   const helpSections = getHelpShortcutSections();
@@ -145,7 +146,7 @@ const DeckView: React.FC = () => {
     speakerNotesWindow?.focus();
 
     window.setTimeout(() => {
-      postSpeakerNotesState(speakerNotesChannelRef.current, currentSlideRef.current, theme);
+      postSpeakerNotesState(speakerNotesChannelRef.current, deckStateRef.current);
     }, 100);
   };
 
@@ -163,7 +164,12 @@ const DeckView: React.FC = () => {
       }
 
       if (event.data.type === 'speaker-notes-request-state') {
-        postSpeakerNotesState(channel, currentSlideRef.current, themeRef.current);
+        postSpeakerNotesState(channel, deckStateRef.current);
+        return;
+      }
+
+      if (event.data.type === 'speaker-notes-set-recording') {
+        setRecording(event.data.isRecording);
         return;
       }
 
@@ -177,9 +183,13 @@ const DeckView: React.FC = () => {
       }
     };
 
-    postSpeakerNotesState(channel, currentSlideRef.current, themeRef.current);
+    postSpeakerNotesState(channel, deckStateRef.current);
+
+    const handlePageHide = () => postSpeakerNotesDeckClosed(channel);
+    window.addEventListener('pagehide', handlePageHide);
 
     return () => {
+      window.removeEventListener('pagehide', handlePageHide);
       channel.close();
 
       if (speakerNotesChannelRef.current === channel) {
@@ -190,9 +200,7 @@ const DeckView: React.FC = () => {
 
   useEffect(() => {
     currentSlideRef.current = currentSlide;
-    themeRef.current = theme;
-    postSpeakerNotesState(speakerNotesChannelRef.current, currentSlide, theme);
-  }, [currentSlide, theme]);
+  }, [currentSlide]);
 
   const commandHandlers: Record<VoiceAction, () => void> = {
     next: goToNext,
@@ -210,8 +218,20 @@ const DeckView: React.FC = () => {
     setVoiceControlsEnabled,
     voiceError,
   } = useSpeechRecognition({
-    onFinalResult: result => speechFollowResultHandlerRef.current(result),
+    onFinalResult: result => {
+      captureSpeech(result.transcript);
+      speechFollowResultHandlerRef.current(result);
+    },
   });
+  const { captureSpeech, isRecording, setRecording, transcript } = useTranscriptRecording({
+    canRecord: isVoiceEnabled,
+    currentSlideRef,
+  });
+
+  useEffect(() => {
+    deckStateRef.current = { canRecord: isVoiceEnabled, currentSlide, isRecording, theme, transcript };
+    postSpeakerNotesState(speakerNotesChannelRef.current, deckStateRef.current);
+  }, [currentSlide, isRecording, isVoiceEnabled, theme, transcript]);
   const {
     isSpeechFollowEnabled,
     lastCommand,
@@ -330,6 +350,7 @@ const DeckView: React.FC = () => {
         isVoiceSupported={isVoiceSupported}
         isSpeechFollowEnabled={isSpeechFollowEnabled}
         isPresentationMode={isPresentationMode}
+        isRecording={isRecording}
         lastCommand={lastCommand}
         openSpeakerNotesView={openSpeakerNotesView}
         slideCount={slides.length}
