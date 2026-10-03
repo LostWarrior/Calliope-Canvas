@@ -1,6 +1,7 @@
 import type { SlideDefinition } from './types';
 import { slides, clampSlideIndex } from './App';
 import React, { useEffect, useRef, useState } from 'react';
+import { ChevronIcon } from './components/Icons';
 import ThemeSelector from './components/ThemeSelector';
 import ThemedButton from './components/ThemedButton';
 import { useTheme } from './components/ThemeProvider';
@@ -93,6 +94,9 @@ export const postSpeakerNotesThemeChange = (
 const getSlideNotes = (slide: SlideDefinition) =>
     slide.notes?.length ? slide.notes : ['No speaker notes for this slide.'];
 
+const isStageDirection = (note: React.ReactNode) =>
+    typeof note === 'string' && /^\[[^\]]+\]$/.test(note.trim());
+
 const renderSpeakerNote = (note: React.ReactNode) => {
     if (typeof note !== 'string') {
         return note;
@@ -171,68 +175,78 @@ export const SpeakerNotesView: React.FC = () => {
     }, []);
 
     return (
-        <div className="min-h-screen bg-canvas px-6 py-8 font-sans text-text">
-            <div className="mx-auto flex max-w-5xl flex-col gap-6">
+        <div className="flex min-h-screen flex-col bg-canvas px-4 py-6 font-sans text-text sm:px-6 sm:py-8">
+            <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6">
                 <header className="flex flex-col gap-4 border-b border-border pb-5">
-                    <div className="flex flex-wrap items-center justify-between gap-3 w-full">
-                        <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2 sm:gap-3">
                             <ThemedButton
                                 onClick={goToPrev}
                                 disabled={currentSlide === 0}
+                                aria-label="Previous slide"
+                                title="Previous slide"
                             >
-                                Previous
+                                <ChevronIcon direction="left" className="h-4 w-4" />
                             </ThemedButton>
-                            <span className="text-muted font-mono">
+                            <span className="whitespace-nowrap font-mono text-sm text-muted">
                                 {currentSlide + 1} / {slides.length}
                             </span>
                             <ThemedButton
                                 onClick={goToNext}
                                 disabled={currentSlide === slides.length - 1}
                                 variant="primary"
+                                aria-label="Next slide"
+                                title="Next slide"
                             >
-                                Next
+                                <ChevronIcon direction="right" className="h-4 w-4" />
                             </ThemedButton>
                         </div>
-                        <div className="flex flex-wrap items-center gap-4">
-                            <ThemeSelector onThemeChange={handleThemeChange} />
-                            <div className={`flex items-center gap-2 text-sm font-semibold ${isConnected ? 'text-primary' : 'text-accent'}`}>
-                                <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-primary' : 'bg-accent'}`}></div>
-                                {isConnected ? 'Connected to deck' : 'Waiting for deck'}
-                            </div>
-                        </div>
+                        <ThemeSelector onThemeChange={handleThemeChange} />
                     </div>
-                    <div>
-                        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary">
+                    <div className="text-center">
+                        <p className="pl-[0.3em] text-sm font-semibold uppercase tracking-[0.3em] text-primary">
                             Speaker Notes
                         </p>
-                        <h1 className="mt-2 text-2xl font-semibold text-text">
+                        <h1 className="mt-2 text-lg font-semibold text-text">
                             {currentSlideDefinition.title}
                         </h1>
                     </div>
                 </header>
 
                 <main className="grid gap-6 lg:grid-cols-[1fr_18rem]">
-                    <section className="rounded-lg border border-border bg-surface px-7 py-6">
-                        <h2 className="text-xl font-semibold text-text">Notes</h2>
-                        <ul className="mt-5 space-y-4 text-xl leading-relaxed text-text">
+                    <section className="min-w-0 rounded-lg border border-border bg-surface px-5 py-5 sm:px-6">
+                        <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-muted">Notes</h2>
+                        <ul className="mt-4 space-y-4 leading-relaxed">
                             {getSlideNotes(currentSlideDefinition).map((note, index) => (
-                                <li key={index}>{renderSpeakerNote(note)}</li>
+                                <li
+                                    key={index}
+                                    className={isStageDirection(note) ? 'text-sm text-muted sm:text-base' : 'text-lg text-text sm:text-xl'}
+                                >
+                                    {renderSpeakerNote(note)}
+                                </li>
                             ))}
                         </ul>
                     </section>
 
                     <aside className="flex flex-col gap-4">
-
-                        <div className="rounded-lg border border-border bg-surface px-5 py-5">
+                        <div className="rounded-lg border border-border bg-surface px-5 py-5 sm:px-6">
                             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted">
                                 Next
                             </p>
-                            <p className="mt-3 text-lg font-semibold text-text">
+                            <p className="mt-4 text-lg font-semibold text-text">
                                 {nextSlideDefinition ? nextSlideDefinition.title : 'End of deck'}
                             </p>
                         </div>
                     </aside>
                 </main>
+
+                <footer
+                    role="status"
+                    className={`mt-auto flex items-center justify-end gap-2 pt-4 text-sm font-semibold ${isConnected ? 'text-primary' : 'text-muted'}`}
+                >
+                    <span className={`h-2 w-2 rounded-full ${isConnected ? 'bg-primary' : 'bg-accent'}`} />
+                    {isConnected ? 'Connected to deck' : 'Waiting for deck'}
+                </footer>
             </div>
         </div>
     );

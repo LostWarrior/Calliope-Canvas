@@ -20,7 +20,7 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ label = 'Theme', onThemeC
 
   return (
     <label className="flex items-center gap-2 text-sm font-semibold text-muted">
-      <span>{label}</span>
+      <span className="sr-only sm:not-sr-only">{label}</span>
       <select
         value={theme}
         onChange={handleThemeChange}

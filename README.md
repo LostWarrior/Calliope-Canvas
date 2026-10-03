@@ -14,10 +14,6 @@ We believe that if your stack uses code, your presentations should too. This app
 
 Because your slides are just simple, modular code, they integrate perfectly with Git. This means collaboration is easy, design changes are straightforward to review, and if a stakeholder asks you to revert to last month’s version, you can do it without breaking a sweat.
 
-**No more templates**
-
-Stop wrestling with outdated software. Start building unforgettable decks on a powerful, version-controlled codebase designed for technical elegance and visual impact.
-
 
 ## 🚀 Getting Started
 
@@ -88,13 +84,12 @@ The speaker-notes window has its own previous and next buttons, which keep the m
 
 ### Themes
 
-Use the theme selector in the footer to switch between `Dark`, `Light`, and `Contrast`. `Light` is the default for new presentations. The selected theme is saved in local storage and syncs with an open speaker-notes window.
-
+Use the theme selector in the speaker notes to switch themes. `Sepia` is the default for new presentations. The selected theme is saved in local storage and syncs with an open speaker-notes window.
+i
 ### Presentation Mode
 
-Click the monitor icon at the top right of the deck (or press `P`) to strip the footer down to just Previous, Next, the slide counter, Notes, and Fullscreen — useful when presenting without going into actual browser fullscreen. Press `P` again, or click the icon, to restore the full controls.
+Click the monitor icon at the top right of the deck (or press `P`) to go in presentation mode useful when presenting without going into actual browser fullscreen. Press `P` again, or click the icon, to restore the full controls.
 
-Slides should use semantic theme utilities instead of fixed palettes:
 
 ```tsx
 <section className="bg-canvas text-text">
@@ -102,8 +97,6 @@ Slides should use semantic theme utilities instead of fixed palettes:
   <button className="bg-primary text-canvas">Action</button>
 </section>
 ```
-
-Available semantic utilities include `canvas`, `surface`, `elevated`, `text`, `muted`, `border`, `primary`, `secondary`, `accent`, `danger`, and `focus`. Extend theme values in `index.css`; Tailwind maps those CSS variables in `tailwind.config.js`.
 
 ### Keyboard Help Menu
 
@@ -136,7 +129,7 @@ Calliope-Canvas/
 │                                                                                                                      
 ├── 📂 images/                  # Add your images here                                                                       
 │   ├── cover.png                                                                           
-│   └── logo-on-black.png                                                                           
+│   └── logo.png                                                                                  
 │                                                                                                                      
 ├── 📂 node_modules/                                                                    
 │                                                                                                                      

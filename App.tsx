@@ -205,7 +205,6 @@ const DeckView: React.FC = () => {
 
   const {
     isVoiceEnabled,
-    isVoiceListening,
     isVoiceSupported,
     requestMicrophonePermission,
     setVoiceControlsEnabled,
@@ -330,7 +329,6 @@ const DeckView: React.FC = () => {
         goToPrev={goToPrev}
         isControlsHidden={isFooterHidden}
         isVoiceEnabled={isVoiceEnabled}
-        isVoiceListening={isVoiceListening}
         isVoiceSupported={isVoiceSupported}
         isSpeechFollowEnabled={isSpeechFollowEnabled}
         isPresentationMode={isPresentationMode}

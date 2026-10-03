@@ -56,10 +56,13 @@ export const getHelpShortcutSections = () => [
   },
   {
     title: 'Voice commands',
-    items: VOICE_COMMANDS.map(command => ({
-      shortcut: command.label,
-      description: command.phrases.join(' | '),
-    })),
+    items: [
+      ...VOICE_COMMANDS.map(command => ({
+        shortcut: command.label,
+        description: command.phrases.join(' | '),
+      })),
+      { shortcut: 'Follow speech (mic button)', description: 'Advance automatically when you say a slide’s cue' },
+    ],
   },
 ];
 
