@@ -50,7 +50,7 @@ Voice now asks for microphone permission when the deck loads and arms speech rec
 - `Zoom In`
 - `Zoom Out`
 
-Commands work regardless of speech-follow mode. `Follow speech: Off` is the default; enable it in the presentation controls only when you want matching cues to advance one slide automatically. Automatic transitions can be undone with `U` or `Undo auto-advance`.
+Commands work regardless of speech-follow mode. Follow speech is off by default; toggle it with the mic icon in the footer (disabled until voice recognition is on) only when you want matching cues to advance one slide automatically. Automatic transitions can be undone with `U`.
 
 Speech-follow matching stays in the browser. Add explicit cues to the slide being introduced; slides without cues are never selected automatically:
 
@@ -88,7 +88,11 @@ The speaker-notes window has its own previous and next buttons, which keep the m
 
 ### Themes
 
-Use the theme selector in the footer to switch between `Dark`, `Light`, and `Contrast`. The selected theme is saved in local storage and syncs with an open speaker-notes window.
+Use the theme selector in the footer to switch between `Dark`, `Light`, and `Contrast`. `Light` is the default for new presentations. The selected theme is saved in local storage and syncs with an open speaker-notes window.
+
+### Presentation Mode
+
+Click the monitor icon at the top right of the deck (or press `P`) to strip the footer down to just Previous, Next, the slide counter, Notes, and Fullscreen — useful when presenting without going into actual browser fullscreen. Press `P` again, or click the icon, to restore the full controls.
 
 Slides should use semantic theme utilities instead of fixed palettes:
 

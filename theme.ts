@@ -7,7 +7,7 @@ export type ThemeOption = {
   name: ThemeName;
 };
 
-export const DEFAULT_THEME: ThemeName = 'dark';
+export const DEFAULT_THEME: ThemeName = 'light';
 export const THEME_STORAGE_KEY = 'calliope-canvas-theme';
 
 export const THEME_OPTIONS: ThemeOption[] = [
