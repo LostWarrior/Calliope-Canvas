@@ -10,12 +10,6 @@ interface FooterProps {
   isVoiceEnabled: boolean;
   isVoiceSupported: boolean;
   lastCommand: string | null;
-  lastAutoAdvance: {
-    cue: string;
-    fromSlide: number;
-    toSlide: number;
-  } | null;
-  lastHeard: string | null;
   openSpeakerNotesView: () => void;
   slideCount: number;
   goToPrev: () => void;
@@ -35,8 +29,6 @@ const Footer: React.FC<FooterProps> = ({
   isVoiceEnabled,
   isVoiceSupported,
   lastCommand,
-  lastAutoAdvance,
-  lastHeard,
   openSpeakerNotesView,
   slideCount,
   toggleFullscreen,
@@ -78,7 +70,7 @@ const Footer: React.FC<FooterProps> = ({
             >
               ⛶
             </ThemedButton>
-            {!isPresentationMode && (
+            {!isPresentationMode && isVoiceSupported && (
               <ThemedButton
                 onClick={toggleSpeechFollow}
                 disabled={!isVoiceEnabled}
@@ -113,15 +105,6 @@ const Footer: React.FC<FooterProps> = ({
           ) : lastCommand ? (
             <div className="text-sm text-muted">Last command: {lastCommand}</div>
           ) : null}
-          {(lastHeard || lastAutoAdvance) && (
-            <div className="text-sm text-muted">
-              {[
-                lastHeard && `Last transcript: ${lastHeard}`,
-                lastAutoAdvance
-                  && `Last auto-transition: ${lastAutoAdvance.fromSlide + 1} → ${lastAutoAdvance.toSlide + 1} • Cue: ${lastAutoAdvance.cue}`,
-              ].filter(Boolean).join(' • ')}
-            </div>
-          )}
         </div>
       )}
     </footer>

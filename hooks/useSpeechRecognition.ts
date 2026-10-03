@@ -85,6 +85,8 @@ export const useSpeechRecognition = ({ onFinalResult }: UseSpeechRecognitionOpti
   }, [isVoiceSupported]);
 
   const requestMicrophonePermission = useCallback(async () => {
+    if (!isVoiceSupported) return;
+
     if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
       setVoiceControlsEnabled(true);
       return;
@@ -99,7 +101,7 @@ export const useSpeechRecognition = ({ onFinalResult }: UseSpeechRecognitionOpti
       setIsVoiceEnabled(false);
       setVoiceError(getMicrophonePermissionErrorMessage(error));
     }
-  }, [setVoiceControlsEnabled]);
+  }, [isVoiceSupported, setVoiceControlsEnabled]);
 
   useEffect(() => {
     const SpeechRecognition = getSpeechRecognition();

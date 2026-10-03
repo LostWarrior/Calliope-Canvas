@@ -14,6 +14,15 @@ export const THEMES = [
   'winter-chill',
   'italian-leather',
   'above-the-surface',
+  'eggs-for-breakfast',
+  'graphite',
+  'admiral',
+  'sorbet',
+  'woodland',
+  'seaglass',
+  'gilded-night',
+  'neon-orchid',
+  'ember',
 ] as const;
 
 export type ThemeName = (typeof THEMES)[number];
@@ -42,6 +51,15 @@ export const THEME_OPTIONS: ThemeOption[] = [
   { label: 'Winter chill', name: 'winter-chill' },
   { label: 'Italian leather', name: 'italian-leather' },
   { label: 'Above the surface', name: 'above-the-surface' },
+  { label: 'Eggs for breakfast', name: 'eggs-for-breakfast' },
+  { label: 'Graphite', name: 'graphite' },
+  { label: 'Admiral', name: 'admiral' },
+  { label: 'Sorbet', name: 'sorbet' },
+  { label: 'Woodland', name: 'woodland' },
+  { label: 'Seaglass', name: 'seaglass' },
+  { label: 'Gilded night', name: 'gilded-night' },
+  { label: 'Neon orchid', name: 'neon-orchid' },
+  { label: 'Ember', name: 'ember' },
 ];
 
 export const isThemeName = (theme: unknown): theme is ThemeName =>

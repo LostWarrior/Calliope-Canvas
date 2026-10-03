@@ -230,6 +230,141 @@
   --color-focus: 16 87 80;
 }
 
+[data-theme='eggs-for-breakfast'] {
+  color-scheme: light;
+  --color-canvas: 217 228 240;
+  --color-surface: 234 232 227;
+  --color-elevated: 203 214 225;
+  --color-text: 48 49 48;
+  --color-muted: 79 82 85;
+  --color-border: 187 191 187;
+  --color-primary: 50 89 132;
+  --color-secondary: 203 214 225;
+  --color-accent: 175 118 31;
+  --color-danger: 190 18 60;
+  --color-focus: 50 89 132;
+}
+
+[data-theme='graphite'] {
+  color-scheme: light;
+  --color-canvas: 241 241 241;
+  --color-surface: 247 247 247;
+  --color-elevated: 224 224 224;
+  --color-text: 34 34 34;
+  --color-muted: 90 90 90;
+  --color-border: 204 204 204;
+  --color-primary: 34 34 34;
+  --color-secondary: 224 224 224;
+  --color-accent: 85 85 85;
+  --color-danger: 190 18 60;
+  --color-focus: 34 34 34;
+}
+
+[data-theme='admiral'] {
+  color-scheme: light;
+  --color-canvas: 255 255 255;
+  --color-surface: 255 255 255;
+  --color-elevated: 235 238 242;
+  --color-text: 0 43 91;
+  --color-muted: 71 101 132;
+  --color-border: 209 217 225;
+  --color-primary: 0 43 91;
+  --color-secondary: 235 238 242;
+  --color-accent: 230 57 70;
+  --color-danger: 190 18 60;
+  --color-focus: 0 43 91;
+}
+
+[data-theme='sorbet'] {
+  color-scheme: light;
+  --color-canvas: 255 252 216;
+  --color-surface: 255 253 232;
+  --color-elevated: 242 235 207;
+  --color-text: 96 40 102;
+  --color-muted: 118 85 112;
+  --color-border: 226 214 195;
+  --color-primary: 33 115 85;
+  --color-secondary: 242 235 207;
+  --color-accent: 246 98 0;
+  --color-danger: 190 18 60;
+  --color-focus: 33 115 85;
+}
+
+[data-theme='woodland'] {
+  color-scheme: dark;
+  --color-canvas: 32 49 0;
+  --color-surface: 42 60 7;
+  --color-elevated: 54 73 15;
+  --color-text: 204 230 112;
+  --color-muted: 173 192 113;
+  --color-border: 84 103 34;
+  --color-primary: 162 197 35;
+  --color-secondary: 54 73 15;
+  --color-accent: 176 95 55;
+  --color-danger: 251 113 133;
+  --color-focus: 185 212 90;
+}
+
+[data-theme='seaglass'] {
+  color-scheme: light;
+  --color-canvas: 236 255 249;
+  --color-surface: 244 255 251;
+  --color-elevated: 217 240 235;
+  --color-text: 0 71 71;
+  --color-muted: 58 103 102;
+  --color-border: 194 222 217;
+  --color-primary: 0 114 114;
+  --color-secondary: 217 240 235;
+  --color-accent: 0 161 163;
+  --color-danger: 190 18 60;
+  --color-focus: 0 114 114;
+}
+
+[data-theme='gilded-night'] {
+  color-scheme: dark;
+  --color-canvas: 10 17 114;
+  --color-surface: 24 31 121;
+  --color-elevated: 41 47 129;
+  --color-text: 248 244 227;
+  --color-muted: 177 176 193;
+  --color-border: 81 85 148;
+  --color-primary: 255 215 0;
+  --color-secondary: 41 47 129;
+  --color-accent: 248 244 227;
+  --color-danger: 251 113 133;
+  --color-focus: 255 225 64;
+}
+
+[data-theme='neon-orchid'] {
+  color-scheme: dark;
+  --color-canvas: 45 0 78;
+  --color-surface: 56 11 87;
+  --color-elevated: 68 24 98;
+  --color-text: 224 187 228;
+  --color-muted: 184 151 195;
+  --color-border: 99 56 123;
+  --color-primary: 255 74 164;
+  --color-secondary: 68 24 98;
+  --color-accent: 162 0 231;
+  --color-danger: 251 113 133;
+  --color-focus: 255 119 187;
+}
+
+[data-theme='ember'] {
+  color-scheme: light;
+  --color-canvas: 242 242 242;
+  --color-surface: 247 247 247;
+  --color-elevated: 227 227 227;
+  --color-text: 51 51 51;
+  --color-muted: 91 91 91;
+  --color-border: 208 208 208;
+  --color-primary: 189 33 0;
+  --color-secondary: 227 227 227;
+  --color-accent: 255 72 33;
+  --color-danger: 190 18 60;
+  --color-focus: 189 33 0;
+}
+
 body {
   margin: 0;
 }

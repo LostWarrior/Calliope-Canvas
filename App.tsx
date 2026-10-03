@@ -214,9 +214,7 @@ const DeckView: React.FC = () => {
   });
   const {
     isSpeechFollowEnabled,
-    lastAutoAdvance,
     lastCommand,
-    lastHeard,
     onFinalRecognitionResult,
     setIsSpeechFollowEnabled,
     undoAutoAdvance,
@@ -332,9 +330,7 @@ const DeckView: React.FC = () => {
         isVoiceSupported={isVoiceSupported}
         isSpeechFollowEnabled={isSpeechFollowEnabled}
         isPresentationMode={isPresentationMode}
-        lastAutoAdvance={lastAutoAdvance}
         lastCommand={lastCommand}
-        lastHeard={lastHeard}
         openSpeakerNotesView={openSpeakerNotesView}
         slideCount={slides.length}
         toggleFullscreen={toggleFullscreen}

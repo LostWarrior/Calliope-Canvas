@@ -37,7 +37,6 @@ export const useSpeechFollow = ({
   slides,
 }: UseSpeechFollowOptions) => {
   const [isSpeechFollowEnabled, setIsSpeechFollowEnabled] = useState(getStoredEnabled);
-  const [lastHeard, setLastHeard] = useState<string | null>(null);
   const [lastCommand, setLastCommand] = useState<string | null>(null);
   const [lastAutoAdvance, setLastAutoAdvance] = useState<AutoAdvance | null>(null);
   const [isLastAutoAdvanceUndone, setIsLastAutoAdvanceUndone] = useState(false);
@@ -72,7 +71,6 @@ export const useSpeechFollow = ({
   const onFinalRecognitionResult = useCallback((result: FinalSpeechRecognitionResult) => {
     const normalizedAlternatives = result.alternatives.map(alternative => normalizeTranscript(alternative.transcript));
     const normalizedTranscript = normalizedAlternatives[0] ?? '';
-    setLastHeard(result.transcript);
 
     const {
       isMatchingBlocked: blocked,
@@ -130,7 +128,6 @@ export const useSpeechFollow = ({
     isSpeechFollowEnabled,
     lastAutoAdvance,
     lastCommand,
-    lastHeard,
     onFinalRecognitionResult,
     setIsSpeechFollowEnabled,
     undoAutoAdvance,

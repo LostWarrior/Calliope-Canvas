@@ -84,7 +84,7 @@ The speaker-notes window has its own previous and next buttons, which keep the m
 
 ### Themes
 
-Use the theme selector in the speaker notes to switch themes. `Sepia` is the default for new presentations. The selected theme is saved in local storage and syncs with an open speaker-notes window.
+Use the theme selector in the speaker notes to switch themes. `Sepia` is the default for new presentations. The selected theme is saved in local storage and syncs with an open speaker-notes window. See [DESIGN-TIPS.md](DESIGN-TIPS.md) for when to use each theme.
 i
 ### Presentation Mode
 
