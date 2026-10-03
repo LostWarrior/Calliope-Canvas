@@ -2,19 +2,40 @@ import type { SlideDefinition } from './types';
 import { slides, clampSlideIndex } from './App';
 import React, { useEffect, useRef, useState } from 'react';
 import { ChevronIcon } from './components/Icons';
+import TranscriptControl from './components/TranscriptControl';
 import ThemeSelector from './components/ThemeSelector';
 import ThemedButton from './components/ThemedButton';
 import { useTheme } from './components/ThemeProvider';
 import { isThemeName, type ThemeName } from './theme';
+import type { TranscriptEntry } from './transcript';
 
 export const SPEAKER_NOTES_CHANNEL = 'calliope-canvas-speaker-notes';
 export const SPEAKER_NOTES_QUERY_PARAM = 'speaker-notes';
 
 
-type SpeakerNotesStateMessage = {
+export type DeckState = {
+    canRecord: boolean;
     currentSlide: number;
+    isRecording: boolean;
     theme: ThemeName;
+    transcript: TranscriptEntry[];
+};
+
+type RecordingState = Pick<DeckState, 'canRecord' | 'isRecording' | 'transcript'>;
+
+const NO_RECORDING: RecordingState = { canRecord: false, isRecording: false, transcript: [] };
+
+type SpeakerNotesStateMessage = DeckState & {
     type: 'speaker-notes-state';
+};
+
+type SpeakerNotesSetRecordingMessage = {
+    isRecording: boolean;
+    type: 'speaker-notes-set-recording';
+};
+
+type SpeakerNotesDeckClosedMessage = {
+    type: 'speaker-notes-deck-closed';
 };
 
 type SpeakerNotesRequestMessage = {
@@ -35,7 +56,9 @@ type SpeakerNotesMessage =
     | SpeakerNotesStateMessage
     | SpeakerNotesRequestMessage
     | SpeakerNotesSetSlideMessage
-    | SpeakerNotesSetThemeMessage;
+    | SpeakerNotesSetThemeMessage
+    | SpeakerNotesSetRecordingMessage
+    | SpeakerNotesDeckClosedMessage;
 
 export const isSpeakerNotesRoute = () => {
     if (typeof window === 'undefined') {
@@ -56,19 +79,21 @@ export const isSpeakerNotesMessage = (message: unknown): message is SpeakerNotes
         || type === 'speaker-notes-request-state'
         || type === 'speaker-notes-set-slide'
         || type === 'speaker-notes-set-theme'
+        || type === 'speaker-notes-set-recording'
+        || type === 'speaker-notes-deck-closed'
     );
 };
 
-export const postSpeakerNotesState = (
-    channel: BroadcastChannel | null,
-    currentSlide: number,
-    theme: ThemeName
-) => {
-    channel?.postMessage({
-        currentSlide,
-        theme,
-        type: 'speaker-notes-state',
-    } satisfies SpeakerNotesStateMessage);
+export const postSpeakerNotesState = (channel: BroadcastChannel | null, state: DeckState) => {
+    channel?.postMessage({ ...state, type: 'speaker-notes-state' } satisfies SpeakerNotesStateMessage);
+};
+
+export const postSpeakerNotesDeckClosed = (channel: BroadcastChannel | null) => {
+    channel?.postMessage({ type: 'speaker-notes-deck-closed' } satisfies SpeakerNotesDeckClosedMessage);
+};
+
+const postSpeakerNotesRecordingChange = (channel: BroadcastChannel | null, isRecording: boolean) => {
+    channel?.postMessage({ isRecording, type: 'speaker-notes-set-recording' } satisfies SpeakerNotesSetRecordingMessage);
 };
 
 export const postSpeakerNotesSlideChange = (
@@ -119,6 +144,7 @@ const renderSpeakerNote = (note: React.ReactNode) => {
 export const SpeakerNotesView: React.FC = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isConnected, setIsConnected] = useState(false);
+    const [recording, setRecording] = useState<RecordingState>(NO_RECORDING);
     const { setTheme } = useTheme();
     const speakerNotesChannelRef = useRef<BroadcastChannel | null>(null);
     const currentSlideDefinition = slides[currentSlide];
@@ -143,6 +169,10 @@ export const SpeakerNotesView: React.FC = () => {
         postSpeakerNotesThemeChange(speakerNotesChannelRef.current, theme);
     };
 
+    const toggleRecording = () => {
+        postSpeakerNotesRecordingChange(speakerNotesChannelRef.current, !recording.isRecording);
+    };
+
     useEffect(() => {
         if (typeof BroadcastChannel === 'undefined') {
             return undefined;
@@ -152,10 +182,25 @@ export const SpeakerNotesView: React.FC = () => {
         speakerNotesChannelRef.current = channel;
 
         channel.onmessage = (event: MessageEvent<unknown>) => {
-            if (!isSpeakerNotesMessage(event.data) || event.data.type !== 'speaker-notes-state') {
+            if (!isSpeakerNotesMessage(event.data)) {
                 return;
             }
 
+            if (event.data.type === 'speaker-notes-deck-closed') {
+                setIsConnected(false);
+                setRecording(NO_RECORDING);
+                return;
+            }
+
+            if (event.data.type !== 'speaker-notes-state') {
+                return;
+            }
+
+            setRecording({
+                canRecord: event.data.canRecord,
+                isRecording: event.data.isRecording,
+                transcript: event.data.transcript,
+            });
             setCurrentSlide(clampSlideIndex(event.data.currentSlide));
             if (isThemeName(event.data.theme)) {
                 setTheme(event.data.theme);
@@ -201,7 +246,15 @@ export const SpeakerNotesView: React.FC = () => {
                                 <ChevronIcon direction="right" className="h-4 w-4" />
                             </ThemedButton>
                         </div>
-                        <ThemeSelector onThemeChange={handleThemeChange} />
+                        <div className="flex items-center gap-2 sm:gap-3">
+                            <TranscriptControl
+                                {...recording}
+                                isLastSlide={currentSlide === slides.length - 1}
+                                onToggleRecording={toggleRecording}
+                                slides={slides}
+                            />
+                            <ThemeSelector onThemeChange={handleThemeChange} />
+                        </div>
                     </div>
                     <div className="text-center">
                         <p className="pl-[0.3em] text-sm font-semibold uppercase tracking-[0.3em] text-primary">

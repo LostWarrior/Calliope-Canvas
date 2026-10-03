@@ -28,7 +28,7 @@ test('exposes keyboard and voice shortcut sections for the help modal', () => {
   assert.equal(sections.length, 2);
   assert.equal(sections[0].title, 'Keyboard shortcuts');
   assert.equal(sections[1].title, 'Voice commands');
-  assert.ok(sections[1].items.some(item => item.shortcut.startsWith('Follow speech')));
+  assert.ok(sections[1].items.some(item => item.shortcut.startsWith('Auto advance')));
 });
 
 test('matches voice commands exactly', () => {

@@ -46,7 +46,7 @@ Voice now asks for microphone permission when the deck loads and arms speech rec
 - `Zoom In`
 - `Zoom Out`
 
-Commands work regardless of speech-follow mode. Follow speech is off by default; toggle it with the mic icon in the footer (disabled until voice recognition is on) only when you want matching cues to advance one slide automatically. Automatic transitions can be undone with `U`.
+Commands work regardless of speech-follow mode. Follow speech is off by default; toggle it with the auto advance button in the footer (disabled until voice recognition is on) only when you want matching cues to advance one slide automatically. Automatic transitions can be undone with `U`.
 
 Speech-follow matching stays in the browser. Add explicit cues to the slide being introduced; slides without cues are never selected automatically:
 
@@ -81,6 +81,8 @@ Text wrapped in square brackets is italicized automatically in the speaker-notes
 
 Use the `Notes` button in the footer to open a synced speaker-notes window. You can also open it directly with `?speaker-notes=1`.
 The speaker-notes window has its own previous and next buttons, which keep the main deck in sync.
+
+To record a transcript, turn on voice in the deck (`V`), then press the record button in the speaker-notes window. A pulsing stop button shows while recording. Once you stop on the last slide, it becomes a download button that saves a `.txt` file with the time and slide number for each line. Recording stops only when you press stop or close the deck tab. The transcript is kept only in memory and is lost when the deck tab closes.
 
 ### Themes
 

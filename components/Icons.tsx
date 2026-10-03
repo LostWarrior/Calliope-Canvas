@@ -47,10 +47,28 @@ export const ChevronIcon: React.FC<{className?: string; direction: 'left' | 'rig
   </svg>
 );
 
+export const RecordIcon: React.FC<{className?: string}> = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" className={className || "h-5 w-5"} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <circle cx="12" cy="12" r="6" />
+  </svg>
+);
+
+export const StopIcon: React.FC<{className?: string}> = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" className={className || "h-5 w-5"} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <rect x="7" y="7" width="10" height="10" rx="1.5" />
+  </svg>
+);
+
+export const DownloadIcon: React.FC<{className?: string}> = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" className={className || "h-5 w-5"} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14" />
+  </svg>
+);
+
 export const FollowSpeechIcon: React.FC<{className?: string}> = ({ className }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" className={className || "h-5 w-5"} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 15.75a3 3 0 003-3V4.5a3 3 0 10-6 0v8.25a3 3 0 003 3z" />
-    <path strokeLinecap="round" strokeLinejoin="round" d="M18.75 11.25v1.5a6.75 6.75 0 01-13.5 0v-1.5M12 19.5v2.25" />
+  <svg xmlns="http://www.w3.org/2000/svg" className={className || "h-5 w-5"} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M4 4.5h16a1 1 0 011 1v9.5a1 1 0 01-1 1h-8.5L7 19.5V16H4a1 1 0 01-1-1V5.5a1 1 0 011-1z" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M8.5 8l2.75 2.25L8.5 12.5M12.75 8l2.75 2.25-2.75 2.25" />
   </svg>
 );
 
