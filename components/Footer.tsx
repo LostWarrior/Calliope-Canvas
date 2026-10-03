@@ -5,6 +5,7 @@ import ThemedButton from './ThemedButton';
 interface FooterProps {
   currentSlide: number;
   isControlsHidden: boolean;
+  isFullscreen: boolean;
   isPresentationMode: boolean;
   isRecording: boolean;
   isSpeechFollowEnabled: boolean;
@@ -25,6 +26,7 @@ const Footer: React.FC<FooterProps> = ({
   goToNext,
   goToPrev,
   isControlsHidden,
+  isFullscreen,
   isPresentationMode,
   isRecording,
   isSpeechFollowEnabled,
@@ -37,6 +39,9 @@ const Footer: React.FC<FooterProps> = ({
   toggleSpeechFollow,
   voiceError,
 }) => {
+  const showRecording = isRecording && !isPresentationMode;
+  const showVoiceUnsupported = !isVoiceSupported && !isControlsHidden && !isPresentationMode;
+
   return (
     <footer className="relative z-20 w-full max-w-7xl py-4 flex flex-col gap-3">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
@@ -61,12 +66,15 @@ const Footer: React.FC<FooterProps> = ({
               >
                 Next
               </ThemedButton>
-              <ThemedButton
-                onClick={openSpeakerNotesView}
-                title="Open speaker notes"
-              >
-                <NotesIcon className="h-5 w-5" />
-              </ThemedButton>
+              {!isFullscreen && (
+                <ThemedButton
+                  onClick={openSpeakerNotesView}
+                  title="Open speaker notes"
+                  aria-label="Open speaker notes"
+                >
+                  <NotesIcon className="h-5 w-5" />
+                </ThemedButton>
+              )}
               <ThemedButton
                 onClick={toggleFullscreen}
                 title="Toggle Fullscreen (F)"
@@ -90,10 +98,17 @@ const Footer: React.FC<FooterProps> = ({
               {currentSlide + 1} / {slideCount}
             </span>
           </div>
-          {isRecording && !isPresentationMode && (
-            <div role="status" className="flex items-center gap-1.5 text-xs font-semibold text-danger lg:absolute lg:top-full lg:right-0 lg:mt-1.5">
-              <span className="h-2 w-2 rounded-full bg-danger motion-safe:animate-pulse" />
-              Recording transcript
+          {(showRecording || showVoiceUnsupported) && (
+            <div className="text-xs lg:absolute lg:top-full lg:right-0 lg:mt-3 lg:whitespace-nowrap">
+              {showRecording && (
+                <div role="status" className="flex items-center gap-1.5 font-semibold text-danger">
+                  <span className="h-2 w-2 rounded-full bg-danger motion-safe:animate-pulse" />
+                  Recording transcript
+                </div>
+              )}
+              {showVoiceUnsupported && (
+                <div className="text-muted">Voice control isn’t supported in this browser.</div>
+              )}
             </div>
           )}
         </div>
@@ -101,16 +116,14 @@ const Footer: React.FC<FooterProps> = ({
 
       {!isControlsHidden && !isPresentationMode && (
         <div className="flex flex-col gap-1">
-          <div className="text-sm text-muted">
+          <div className="text-xs text-muted">
             {isVoiceSupported && 'Say “next slide” or “go back” anytime. '}
             Press Shift + ? for all commands.
           </div>
           {voiceError ? (
-            <div className="text-sm text-danger">{voiceError}</div>
-          ) : !isVoiceSupported ? (
-            <div className="text-sm text-muted">Voice control isn’t supported in this browser.</div>
+            <div className="text-xs text-danger">{voiceError}</div>
           ) : lastCommand ? (
-            <div className="text-sm text-muted">Last command: {lastCommand}</div>
+            <div className="text-xs text-muted">Last command: {lastCommand}</div>
           ) : null}
         </div>
       )}

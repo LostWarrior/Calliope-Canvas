@@ -57,6 +57,7 @@ const DeckView: React.FC = () => {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isFooterHidden, setIsFooterHidden] = useState(false);
   const [isPresentationMode, setIsPresentationMode] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const { setTheme, theme } = useTheme();
 
   const currentSlideRef = useRef(currentSlide);
@@ -126,7 +127,7 @@ const DeckView: React.FC = () => {
 
   useEffect(() => {
     const handleFullscreenChange = () => {
-      setIsFooterHidden(Boolean(document.fullscreenElement));
+      setIsFullscreen(Boolean(document.fullscreenElement));
     };
 
     document.addEventListener('fullscreenchange', handleFullscreenChange);
@@ -349,7 +350,8 @@ const DeckView: React.FC = () => {
         isVoiceEnabled={isVoiceEnabled}
         isVoiceSupported={isVoiceSupported}
         isSpeechFollowEnabled={isSpeechFollowEnabled}
-        isPresentationMode={isPresentationMode}
+        isFullscreen={isFullscreen}
+        isPresentationMode={isPresentationMode || isFullscreen}
         isRecording={isRecording}
         lastCommand={lastCommand}
         openSpeakerNotesView={openSpeakerNotesView}
