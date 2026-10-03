@@ -10,4 +10,4 @@
 - Make calliope canvas package. Running cc init should create this presentation system locally. Install once, use anywhere
 - Integrate with google slides/apple keynote to make it easy to share with non engineers
 - Add a claude.md and agents.md and guidelines for creating good presentations
-- Debug transcript feature to create sharable transcripts
+- Keep a single speaker notes window: clicking the notes button again should focus the existing window instead of opening another
