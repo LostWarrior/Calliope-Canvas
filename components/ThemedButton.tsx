@@ -21,7 +21,7 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
   <button
     className={[
       'inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-semibold transition-colors duration-motion',
-      'outline-none focus-visible:ring-2 focus-visible:ring-focus disabled:cursor-not-allowed disabled:opacity-50',
+      'outline-hidden focus-visible:ring-2 focus-visible:ring-focus disabled:cursor-not-allowed disabled:opacity-50',
       VARIANT_CLASS[variant],
       className,
     ].join(' ')}

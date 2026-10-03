@@ -47,9 +47,11 @@ Dev server runs on **http://localhost:3000**.
 - Functional components, arrow function style, typed props interfaces
 - PascalCase for components/types; camelCase for functions/variables; SCREAMING_SNAKE_CASE for module-level constants
 - `@/` alias resolves to project root
-- No CSS framework — plain `index.css`
+- Tailwind CSS v4 via `@tailwindcss/vite`; configured in `index.css` (no `tailwind.config.js`)
+- Themes are `[data-theme='…']` blocks in `index.css` setting `--theme-*` RGB triplets; `@theme inline` maps them to utilities (`bg-canvas`, `text-muted`, `bg-primary/85`, …)
+- Style with semantic theme utilities, never fixed palette colours
 - No linter or formatter configured
-- No test runner configured in `package.json`; `presentationBehavior.test.js` is standalone
+- No test runner configured in `package.json`; run `node --test presentationBehavior.test.js speechFollowBehavior.test.js`
 
 ## Architecture Notes
 

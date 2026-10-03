@@ -309,7 +309,7 @@ const DeckView: React.FC = () => {
       >
         <PresentationIcon className="h-5 w-5" />
       </ThemedButton>
-      <main className="relative z-0 w-full max-w-7xl flex-grow flex flex-col items-center justify-center">
+      <main className="relative z-0 w-full max-w-7xl grow flex flex-col items-center justify-center">
         <div
           className={`presentation-stage w-full ${animationsPaused ? 'animations-paused' : ''}`}
           style={{ transform: `scale(${zoomLevel})` }}
