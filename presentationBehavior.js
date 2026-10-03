@@ -21,12 +21,32 @@ export const VOICE_COMMANDS = [
   { action: 'zoomIn', label: 'Zoom In', phrases: ['zoom in'] },
 ];
 
+/** @type {Record<string, string>} */
+const MISHEARD_COMMAND_WORDS = {
+  flight: 'slide',
+  light: 'slide',
+  previews: 'previous',
+  side: 'slide',
+  slides: 'slide',
+  slight: 'slide',
+};
+
+/**
+ * @param {string} transcript
+ */
+const correctMisheardWords = transcript =>
+  transcript
+    .split(' ')
+    .map(word => MISHEARD_COMMAND_WORDS[word] ?? word)
+    .join(' ');
+
 /**
  * @param {string[]} normalizedTranscripts
  * @returns {VoiceCommand | undefined}
  */
 export const matchVoiceCommand = normalizedTranscripts =>
   normalizedTranscripts
+    .map(correctMisheardWords)
     .map(transcript =>
       VOICE_COMMANDS.find(command => command.phrases.some(phrase => phrase === transcript))
     )
