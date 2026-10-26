@@ -7,7 +7,7 @@
 - Explore adding a central deck control where one will be able to navigate multiple decks
   This will make calliope canvas repo a central presentation system.
   You can create a new presentation, edit one, borrow elements from another presentation without having to clone the repo again
-- Make calliope canvas package. Running cc init should create this presentation system locally. Install once, use anywhere
+- Make Calliope Canvas a package so people can use it in their own git repo. Running `cc init` creates the presentation system locally; slides live in their repo, and Calliope updates arrive as a package upgrade instead of a fork or fresh clone. Install once, use anywhere
 - Integrate with google slides/apple keynote to make it easy to share with non engineers
 - Add a claude.md and agents.md and guidelines for creating good presentations
 - Keep a single speaker notes window: clicking the notes button again should focus the existing window instead of opening another
