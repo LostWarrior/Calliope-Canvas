@@ -1,16 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import Footer from './components/Footer';
+import Header from './components/Header';
+import ProgressBar from './components/ProgressBar';
+import SlideSidebar from './components/SlideSidebar';
 import { ThemeProvider, useTheme } from './components/ThemeProvider';
-import type { SlideDefinition, VoiceAction } from './types';
+import type { HeaderConfig, ProgressBarConfig, SidebarConfig, SlideDefinition, VoiceAction } from './types';
 import { isSpeakerNotesRoute, SpeakerNotesView, SPEAKER_NOTES_QUERY_PARAM, SPEAKER_NOTES_CHANNEL, postSpeakerNotesDeckClosed, postSpeakerNotesState, isSpeakerNotesMessage, type DeckState } from './SpeakerNotes';
 import HelpOverlay from './components/HelpOverlay';
-import { getHelpShortcutSections, getSlideTransitionClass, isPresentationShortcutAllowed } from './presentationBehavior';
+import { getHelpShortcutSections, getSlideTransitionClass, isPresentationShortcutAllowed, parseSidebarWidth, resolveProgressBarPosition } from './presentationBehavior';
 import { useSpeechRecognition, type FinalSpeechRecognitionResult } from './hooks/useSpeechRecognition';
 import { useSpeechFollow } from './hooks/useSpeechFollow';
 import { useTranscriptRecording } from './hooks/useTranscriptRecording';
-import ThemedButton from './components/ThemedButton';
-import { PresentationIcon } from './components/Icons';
 import TitleSlide from './slides/TitleSlide';
 import PlaceholderSlide from './slides/PlaceholderSlide';
 import { isThemeName } from './theme';
@@ -39,6 +40,21 @@ export const slides: SlideDefinition[] = [
   },
 ];
 
+export const sidebarConfig: SidebarConfig = {
+  label: 'Slides',
+};
+
+export const headerConfig: HeaderConfig = {
+  show: true,
+  breadcrumb: true,
+};
+
+export const progressBarConfig: ProgressBarConfig = {
+  position: 'top',
+};
+
+const SIDEBAR_WIDTH_STORAGE_KEY = 'calliope-canvas-sidebar-width';
+
 const MIN_ZOOM_LEVEL = 0.8;
 const MAX_ZOOM_LEVEL = 1.4;
 const ZOOM_STEP = 0.1;
@@ -58,7 +74,27 @@ const DeckView: React.FC = () => {
   const [isFooterHidden, setIsFooterHidden] = useState(false);
   const [isPresentationMode, setIsPresentationMode] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [sidebarWidth, setSidebarWidth] = useState(() => parseSidebarWidth(window.localStorage.getItem(SIDEBAR_WIDTH_STORAGE_KEY)));
+  const isSidebarVisible = isSidebarOpen && !isPresentationMode && !isFullscreen;
+  const isHeaderVisible = headerConfig.show !== false;
+  const progressBarPosition = resolveProgressBarPosition(progressBarConfig.position ?? 'top', isHeaderVisible && !isPresentationMode && !isFullscreen);
+  const activeSlide = slides[currentSlide];
   const { setTheme, theme } = useTheme();
+
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
+    requestAnimationFrame(() => document.getElementById('slide-sidebar-toggle')?.focus());
+  };
+
+  const toggleSidebar = () => {
+    if (isSidebarVisible) closeSidebar();
+    else setIsSidebarOpen(true);
+  };
+
+  useEffect(() => {
+    window.localStorage.setItem(SIDEBAR_WIDTH_STORAGE_KEY, String(sidebarWidth));
+  }, [sidebarWidth]);
 
   const currentSlideRef = useRef(currentSlide);
   const deckStateRef = useRef<DeckState>({ canRecord: false, currentSlide, isRecording: false, theme, transcript: [] });
@@ -249,7 +285,6 @@ const DeckView: React.FC = () => {
   });
   speechFollowResultHandlerRef.current = onFinalRecognitionResult;
 
-  // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (isHelpOpen && !isPresentationShortcutAllowed(e.key, true)) {
@@ -273,6 +308,15 @@ const DeckView: React.FC = () => {
         return;
       }
 
+      if (e.target instanceof HTMLElement && e.target.closest('input, textarea, select, [contenteditable="true"]')) {
+        return;
+      }
+
+      // Let native buttons activate with Space without also toggling animations.
+      if (e.key === ' ' && e.target instanceof HTMLElement && e.target.closest('button')) {
+        return;
+      }
+
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
         e.preventDefault();
         goToNext();
@@ -288,6 +332,9 @@ const DeckView: React.FC = () => {
       } else if (e.key === 'p' || e.key === 'P') {
         e.preventDefault();
         togglePresentationMode();
+      } else if ((e.key === 's' || e.key === 'S') && !e.metaKey && !e.ctrlKey && !e.altKey && !isPresentationMode && !isFullscreen) {
+        e.preventDefault();
+        toggleSidebar();
       } else if (e.key === '+') {
         e.preventDefault();
         zoomIn();
@@ -316,20 +363,31 @@ const DeckView: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [animationsPaused, isHelpOpen, isVoiceEnabled, requestMicrophonePermission, setVoiceControlsEnabled, undoAutoAdvance]);
+  }, [animationsPaused, isFullscreen, isHelpOpen, isPresentationMode, isSidebarVisible, isVoiceEnabled, requestMicrophonePermission, setVoiceControlsEnabled, undoAutoAdvance]);
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 bg-canvas font-sans text-text relative">
-      <div className="progress-bar w-full" style={{ width: `${((currentSlide + 1) / slides.length) * 100}%` }}></div>
-      <ThemedButton
-        onClick={togglePresentationMode}
-        variant={isPresentationMode ? 'primary' : 'ghost'}
-        title="Toggle presentation mode (P)"
-        aria-pressed={isPresentationMode}
-        className="fixed top-4 right-4 z-30"
-      >
-        <PresentationIcon className="h-5 w-5" />
-      </ThemedButton>
+    <div
+      className={`relative flex min-h-screen w-full flex-col items-center justify-center bg-canvas p-4 font-sans text-text ${isSidebarVisible ? 'md:pl-[calc(var(--sidebar-width)+1rem)]' : ''}`}
+      style={{ '--sidebar-width': `min(${sidebarWidth}px, 50vw)` } as React.CSSProperties}
+    >
+      {isSidebarVisible && (
+        <SlideSidebar config={sidebarConfig} slides={slides} currentSlide={currentSlide} onClose={closeSidebar} onResize={setSidebarWidth} onSelect={goToSlide} width={sidebarWidth} />
+      )}
+      {progressBarPosition !== 'hidden' && (
+        <ProgressBar currentSlide={currentSlide} isSidebarVisible={isSidebarVisible} position={progressBarPosition} slideCount={slides.length} />
+      )}
+      {isHeaderVisible && (
+        <Header
+          activeSlide={activeSlide}
+          isFullscreen={isFullscreen}
+          isPresentationMode={isPresentationMode}
+          isSidebarVisible={isSidebarVisible}
+          showBreadcrumb={headerConfig.breadcrumb !== false}
+          sidebarLabel={sidebarConfig.label || 'Slides'}
+          toggleSidebar={toggleSidebar}
+          togglePresentationMode={togglePresentationMode}
+        />
+      )}
       <main className="relative z-0 w-full max-w-7xl grow flex flex-col items-center justify-center">
         <div
           className={`presentation-stage w-full ${animationsPaused ? 'animations-paused' : ''}`}
@@ -337,7 +395,7 @@ const DeckView: React.FC = () => {
         >
           <div className="slide-container w-full">
             <div key={currentSlide} className={getSlideTransitionClass(slideDirection)}>
-              {slides[currentSlide].content}
+              {activeSlide.content}
             </div>
           </div>
         </div>

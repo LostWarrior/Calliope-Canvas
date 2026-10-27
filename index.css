@@ -468,11 +468,7 @@ body {
   }
 }
 
-.progress-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 3px;
+.progress-bar-fill {
   background: linear-gradient(
     to right,
     rgb(var(--theme-primary)),
@@ -482,6 +478,27 @@ body {
 
 .help-modal-panel {
   animation: helpModalIn 180ms ease-out;
+}
+
+body.is-resizing-sidebar {
+  cursor: col-resize;
+  user-select: none;
+}
+
+.slide-sidebar-panel {
+  animation: slideSidebarIn 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes slideSidebarIn {
+  from {
+    opacity: 0;
+    transform: translate3d(-1.5rem, 0, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 @keyframes helpModalIn {
@@ -498,7 +515,8 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .slide-transition,
-  .help-modal-panel {
+  .help-modal-panel,
+  .slide-sidebar-panel {
     animation: none;
   }
 }

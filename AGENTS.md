@@ -9,7 +9,10 @@ Calliope-Canvas is a React + TypeScript presentation framework. Slides are React
 - `App.tsx` — deck orchestrator: slide array, navigation, voice control, zoom, keyboard shortcuts
 - `SpeakerNotes.tsx` — speaker-notes popup, synced to main deck via BroadcastChannel
 - `types.ts` — shared types (`SlideDefinition`, `AnimationState`, `DataPacket`, `VoiceAction`)
+- `components/Header.tsx` — sidebar toggle, breadcrumb, presentation-mode button; shown/hidden via `headerConfig` in `App.tsx`
+- `components/ProgressBar.tsx` — slide progress bar; placed via `progressBarConfig` in `App.tsx`
 - `components/Footer.tsx` — footer bar
+- `components/SlideSidebar.tsx` — optional slide navigator, grouped by `section`; text set via `sidebarConfig` in `App.tsx`
 - `components/HelpOverlay.tsx` — shift+? help overlay
 - `components/Icons.tsx` — SVG icons
 - `slides/` — individual slide components

@@ -64,6 +64,7 @@ const HELP_SHORTCUT_ITEMS = [
   { shortcut: 'Esc', description: 'Close this help panel' },
   { shortcut: 'H', description: 'Hide or show controls (keeps slide counter visible)' },
   { shortcut: 'P', description: 'Toggle presentation mode (hides voice and follow-speech controls)' },
+  { shortcut: 'S', description: 'Show or hide the slide sidebar' },
 ];
 
 /**
@@ -81,7 +82,7 @@ export const getHelpShortcutSections = () => [
         shortcut: command.label,
         description: command.phrases.join(' | '),
       })),
-      { shortcut: 'Auto advance (speech bubble button)', description: 'Advance automatically when you say a slide’s cue' },
+      { shortcut: 'Auto advance', description: 'Turn on auto advance in the footer, then say a slide’s cue' },
     ],
   },
 ];
@@ -100,3 +101,53 @@ export const getSlideTransitionClass = direction =>
   direction === 1
     ? 'slide-transition slide-transition-forward'
     : 'slide-transition slide-transition-backward';
+
+/**
+ * @param {{ section?: string }[]} slides
+ * @returns {{ section?: string, slideIndexes: number[] }[]}
+ */
+export const groupSlidesBySection = slides =>
+  slides.reduce((groups, slide, index) => {
+    const lastGroup = groups[groups.length - 1];
+    if (lastGroup && lastGroup.section === slide.section) {
+      lastGroup.slideIndexes.push(index);
+    } else {
+      groups.push({ section: slide.section, slideIndexes: [index] });
+    }
+    return groups;
+  }, /** @type {{ section?: string, slideIndexes: number[] }[]} */ ([]));
+
+/**
+ * @param {'top' | 'below-header' | 'bottom' | 'hidden'} position
+ * @param {boolean} isHeaderRowVisible
+ */
+export const resolveProgressBarPosition = (position, isHeaderRowVisible) =>
+  position === 'below-header' && !isHeaderRowVisible ? 'top' : position;
+
+export const SIDEBAR_DEFAULT_WIDTH = 272;
+export const SIDEBAR_MIN_WIDTH = 224;
+export const SIDEBAR_MAX_WIDTH = 480;
+export const SIDEBAR_WIDTH_STEP = 16;
+
+/**
+ * @param {number} viewportWidth
+ */
+export const getSidebarMaxWidth = viewportWidth =>
+  Math.max(SIDEBAR_MIN_WIDTH, Math.min(SIDEBAR_MAX_WIDTH, Math.floor(viewportWidth / 2)));
+
+/**
+ * @param {number} width
+ * @param {number} viewportWidth
+ */
+export const clampSidebarWidth = (width, viewportWidth) =>
+  Math.round(Math.min(getSidebarMaxWidth(viewportWidth), Math.max(SIDEBAR_MIN_WIDTH, width)));
+
+/**
+ * @param {string | null} storedWidth
+ */
+export const parseSidebarWidth = storedWidth => {
+  const width = Number(storedWidth);
+  return storedWidth && Number.isFinite(width)
+    ? Math.round(Math.min(SIDEBAR_MAX_WIDTH, Math.max(SIDEBAR_MIN_WIDTH, width)))
+    : SIDEBAR_DEFAULT_WIDTH;
+};

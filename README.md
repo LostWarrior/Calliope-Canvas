@@ -60,6 +60,48 @@ Speech-follow matching stays in the browser. Add explicit cues to the slide bein
 }
 ```
 
+### Slide Sidebar
+
+Click **Slides** at the top left to open a numbered list of slide titles. Click a title to jump to that slide; the current slide is highlighted. Close it with the × button or Escape. Drag the sidebar's right edge to resize it, or focus the edge and use Left/Right (Home/End for the smallest/largest). Double-click the edge to reset. Your width is remembered. In the list, Up/Down and Home/End move focus, and Enter or Space selects a slide.
+
+The sidebar follows the selected theme. It hides during presentation mode and fullscreen, then returns if it was open. On smaller screens it overlays the deck and closes after you select a slide.
+
+Add a `section` to slides to group consecutive slides under a numbered heading. The current section and slide title also appear as a breadcrumb next to the toggle:
+
+```tsx
+{ content: <IndexScanSlide />, section: 'Indices and query performance', title: 'SELECT with a B-tree index' }
+```
+
+Set the sidebar text with `sidebarConfig` in `App.tsx`. Every field is optional:
+
+```tsx
+export const sidebarConfig: SidebarConfig = {
+  label: 'Slides',                // toggle button text, the default
+  eyebrow: 'PostgreSQL training', // small line above the title
+  title: 'Your slides',           // sidebar heading, defaults to the label
+  footnote: 'Learn, predict, then try it in the lab.',
+};
+```
+
+### Header and Progress Bar
+
+Set these in `App.tsx`. Every field is optional:
+
+```tsx
+export const headerConfig: HeaderConfig = {
+  show: true,       // false hides the sidebar toggle, breadcrumb and presentation-mode button
+  breadcrumb: true, // false hides the section / slide title breadcrumb
+};
+
+export const progressBarConfig: ProgressBarConfig = {
+  position: 'top', // 'top' | 'below-header' | 'bottom' | 'hidden'
+};
+```
+
+- `top` and `bottom` pin a thin bar to that edge of the window.
+- `below-header` draws a track under the header row. It moves to `top` when the header row isn't showing (header off, presentation mode, or fullscreen).
+- Press **S** to show or hide the sidebar, which is how you open it when the header is off.
+
 ### Speaker Notes
 
 Slides can include optional speaker notes alongside the rendered slide component:
