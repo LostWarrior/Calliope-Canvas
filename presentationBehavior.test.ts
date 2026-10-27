@@ -14,7 +14,7 @@ import {
   SIDEBAR_DEFAULT_WIDTH,
   SIDEBAR_MAX_WIDTH,
   SIDEBAR_MIN_WIDTH,
-} from './presentationBehavior.js';
+} from './presentationBehavior.ts';
 
 test('uses a forward animation class for positive direction', () => {
   assert.equal(getSlideTransitionClass(1), 'slide-transition slide-transition-forward');

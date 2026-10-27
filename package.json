@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node --test *.test.ts"
+  },
+  "engines": {
+    "node": ">=22.18"
   },
   "dependencies": {
     "react": "^18.2.0",
