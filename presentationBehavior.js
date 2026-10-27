@@ -118,7 +118,6 @@ export const groupSlidesBySection = slides =>
   }, /** @type {{ section?: string, slideIndexes: number[] }[]} */ ([]));
 
 /**
- * Falls back to the top edge when there is no header row to sit under.
  * @param {'top' | 'below-header' | 'bottom' | 'hidden'} position
  * @param {boolean} isHeaderRowVisible
  */
