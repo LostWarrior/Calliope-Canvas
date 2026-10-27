@@ -285,7 +285,6 @@ const DeckView: React.FC = () => {
   });
   speechFollowResultHandlerRef.current = onFinalRecognitionResult;
 
-  // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (isHelpOpen && !isPresentationShortcutAllowed(e.key, true)) {

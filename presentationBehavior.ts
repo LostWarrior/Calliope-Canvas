@@ -87,7 +87,6 @@ export const groupSlidesBySection = (slides: { section?: string }[]): SlideGroup
     return groups;
   }, []);
 
-// Falls back to the top edge when there is no header row to sit under.
 export const resolveProgressBarPosition = (
   position: ProgressBarPosition,
   isHeaderRowVisible: boolean,
