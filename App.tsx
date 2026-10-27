@@ -7,7 +7,7 @@ import { ThemeProvider, useTheme } from './components/ThemeProvider';
 import type { SidebarConfig, SlideDefinition, VoiceAction } from './types';
 import { isSpeakerNotesRoute, SpeakerNotesView, SPEAKER_NOTES_QUERY_PARAM, SPEAKER_NOTES_CHANNEL, postSpeakerNotesDeckClosed, postSpeakerNotesState, isSpeakerNotesMessage, type DeckState } from './SpeakerNotes';
 import HelpOverlay from './components/HelpOverlay';
-import { getHelpShortcutSections, getSlideTransitionClass, isPresentationShortcutAllowed } from './presentationBehavior';
+import { getHelpShortcutSections, getSlideTransitionClass, isPresentationShortcutAllowed, parseSidebarWidth } from './presentationBehavior';
 import { useSpeechRecognition, type FinalSpeechRecognitionResult } from './hooks/useSpeechRecognition';
 import { useSpeechFollow } from './hooks/useSpeechFollow';
 import { useTranscriptRecording } from './hooks/useTranscriptRecording';
@@ -43,6 +43,8 @@ export const sidebarConfig: SidebarConfig = {
   label: 'Slides',
 };
 
+const SIDEBAR_WIDTH_STORAGE_KEY = 'calliope-canvas-sidebar-width';
+
 const MIN_ZOOM_LEVEL = 0.8;
 const MAX_ZOOM_LEVEL = 1.4;
 const ZOOM_STEP = 0.1;
@@ -63,6 +65,7 @@ const DeckView: React.FC = () => {
   const [isPresentationMode, setIsPresentationMode] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [sidebarWidth, setSidebarWidth] = useState(() => parseSidebarWidth(window.localStorage.getItem(SIDEBAR_WIDTH_STORAGE_KEY)));
   const isSidebarVisible = isSidebarOpen && !isPresentationMode && !isFullscreen;
   const activeSlide = slides[currentSlide];
   const { setTheme, theme } = useTheme();
@@ -71,6 +74,10 @@ const DeckView: React.FC = () => {
     setIsSidebarOpen(false);
     requestAnimationFrame(() => document.getElementById('slide-sidebar-toggle')?.focus());
   };
+
+  useEffect(() => {
+    window.localStorage.setItem(SIDEBAR_WIDTH_STORAGE_KEY, String(sidebarWidth));
+  }, [sidebarWidth]);
 
   const currentSlideRef = useRef(currentSlide);
   const deckStateRef = useRef<DeckState>({ canRecord: false, currentSlide, isRecording: false, theme, transcript: [] });
@@ -340,9 +347,12 @@ const DeckView: React.FC = () => {
   }, [animationsPaused, isHelpOpen, isVoiceEnabled, requestMicrophonePermission, setVoiceControlsEnabled, undoAutoAdvance]);
 
   return (
-    <div className={`relative flex min-h-screen w-full flex-col items-center justify-center bg-canvas p-4 font-sans text-text ${isSidebarVisible ? 'md:pl-[17rem]' : ''}`}>
+    <div
+      className={`relative flex min-h-screen w-full flex-col items-center justify-center bg-canvas p-4 font-sans text-text ${isSidebarVisible ? 'md:pl-[calc(var(--sidebar-width)+1rem)]' : ''}`}
+      style={{ '--sidebar-width': `min(${sidebarWidth}px, 50vw)` } as React.CSSProperties}
+    >
       {isSidebarVisible && (
-        <SlideSidebar config={sidebarConfig} slides={slides} currentSlide={currentSlide} onClose={closeSidebar} onSelect={goToSlide} />
+        <SlideSidebar config={sidebarConfig} slides={slides} currentSlide={currentSlide} onClose={closeSidebar} onResize={setSidebarWidth} onSelect={goToSlide} width={sidebarWidth} />
       )}
       <Header
         activeSlide={activeSlide}

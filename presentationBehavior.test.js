@@ -2,11 +2,17 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
+  clampSidebarWidth,
+  getSidebarMaxWidth,
   getSlideTransitionClass,
   groupSlidesBySection,
   isPresentationShortcutAllowed,
   getHelpShortcutSections,
   matchVoiceCommand,
+  parseSidebarWidth,
+  SIDEBAR_DEFAULT_WIDTH,
+  SIDEBAR_MAX_WIDTH,
+  SIDEBAR_MIN_WIDTH,
 } from './presentationBehavior.js';
 
 test('uses a forward animation class for positive direction', () => {
@@ -76,4 +82,24 @@ test('starts a new group when a section repeats after another section', () => {
 
 test('returns no groups for an empty deck', () => {
   assert.deepEqual(groupSlidesBySection([]), []);
+});
+
+test('clamps sidebar width between the minimum and maximum', () => {
+  assert.equal(clampSidebarWidth(100, 1600), SIDEBAR_MIN_WIDTH);
+  assert.equal(clampSidebarWidth(320.4, 1600), 320);
+  assert.equal(clampSidebarWidth(900, 1600), SIDEBAR_MAX_WIDTH);
+});
+
+test('limits sidebar width to half the viewport', () => {
+  assert.equal(getSidebarMaxWidth(800), 400);
+  assert.equal(clampSidebarWidth(450, 800), 400);
+  assert.equal(getSidebarMaxWidth(300), SIDEBAR_MIN_WIDTH);
+});
+
+test('reads a stored sidebar width or falls back to the default', () => {
+  assert.equal(parseSidebarWidth('320'), 320);
+  assert.equal(parseSidebarWidth('9000'), SIDEBAR_MAX_WIDTH);
+  assert.equal(parseSidebarWidth(null), SIDEBAR_DEFAULT_WIDTH);
+  assert.equal(parseSidebarWidth(''), SIDEBAR_DEFAULT_WIDTH);
+  assert.equal(parseSidebarWidth('wide'), SIDEBAR_DEFAULT_WIDTH);
 });
