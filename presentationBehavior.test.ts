@@ -10,6 +10,7 @@ import {
   getHelpShortcutSections,
   matchVoiceCommand,
   parseSidebarWidth,
+  resolveProgressBarPosition,
   SIDEBAR_DEFAULT_WIDTH,
   SIDEBAR_MAX_WIDTH,
   SIDEBAR_MIN_WIDTH,
@@ -102,4 +103,19 @@ test('reads a stored sidebar width or falls back to the default', () => {
   assert.equal(parseSidebarWidth(null), SIDEBAR_DEFAULT_WIDTH);
   assert.equal(parseSidebarWidth(''), SIDEBAR_DEFAULT_WIDTH);
   assert.equal(parseSidebarWidth('wide'), SIDEBAR_DEFAULT_WIDTH);
+});
+
+test('keeps the progress bar where it was placed', () => {
+  assert.equal(resolveProgressBarPosition('top', false), 'top');
+  assert.equal(resolveProgressBarPosition('bottom', true), 'bottom');
+  assert.equal(resolveProgressBarPosition('hidden', true), 'hidden');
+  assert.equal(resolveProgressBarPosition('below-header', true), 'below-header');
+});
+
+test('moves a below-header progress bar to the top when the header row is hidden', () => {
+  assert.equal(resolveProgressBarPosition('below-header', false), 'top');
+});
+
+test('lists the sidebar shortcut in the help modal', () => {
+  assert.ok(getHelpShortcutSections()[0].items.some(item => item.shortcut === 'S'));
 });

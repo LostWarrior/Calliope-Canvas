@@ -468,11 +468,7 @@ body {
   }
 }
 
-.progress-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 3px;
+.progress-bar-fill {
   background: linear-gradient(
     to right,
     rgb(var(--theme-primary)),

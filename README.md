@@ -83,6 +83,25 @@ export const sidebarConfig: SidebarConfig = {
 };
 ```
 
+### Header and Progress Bar
+
+Set these in `App.tsx`. Every field is optional:
+
+```tsx
+export const headerConfig: HeaderConfig = {
+  show: true,       // false hides the sidebar toggle, breadcrumb and presentation-mode button
+  breadcrumb: true, // false hides the section / slide title breadcrumb
+};
+
+export const progressBarConfig: ProgressBarConfig = {
+  position: 'top', // 'top' | 'below-header' | 'bottom' | 'hidden'
+};
+```
+
+- `top` and `bottom` pin a thin bar to that edge of the window.
+- `below-header` draws a track under the header row. It moves to `top` when the header row isn't showing (header off, presentation mode, or fullscreen).
+- Press **S** to show or hide the sidebar, which is how you open it when the header is off.
+
 ### Speaker Notes
 
 Slides can include optional speaker notes alongside the rendered slide component:

@@ -1,4 +1,4 @@
-import type { HelpShortcutItem, HelpShortcutSection, SlideGroup, VoiceCommand } from './types.ts';
+import type { HelpShortcutItem, HelpShortcutSection, ProgressBarPosition, SlideGroup, VoiceCommand } from './types.ts';
 
 export const VOICE_COMMANDS: VoiceCommand[] = [
   { action: 'next', label: 'Next Slide', phrases: ['next slide please', 'next slide'] },
@@ -48,6 +48,7 @@ const HELP_SHORTCUT_ITEMS: HelpShortcutItem[] = [
   { shortcut: 'Esc', description: 'Close this help panel' },
   { shortcut: 'H', description: 'Hide or show controls (keeps slide counter visible)' },
   { shortcut: 'P', description: 'Toggle presentation mode (hides voice and follow-speech controls)' },
+  { shortcut: 'S', description: 'Show or hide the slide sidebar' },
 ];
 
 export const getHelpShortcutSections = (): HelpShortcutSection[] => [
@@ -85,6 +86,12 @@ export const groupSlidesBySection = (slides: { section?: string }[]): SlideGroup
     }
     return groups;
   }, []);
+
+// Falls back to the top edge when there is no header row to sit under.
+export const resolveProgressBarPosition = (
+  position: ProgressBarPosition,
+  isHeaderRowVisible: boolean,
+): ProgressBarPosition => (position === 'below-header' && !isHeaderRowVisible ? 'top' : position);
 
 export const SIDEBAR_DEFAULT_WIDTH = 272;
 export const SIDEBAR_MIN_WIDTH = 224;
