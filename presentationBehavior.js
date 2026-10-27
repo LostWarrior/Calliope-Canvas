@@ -64,6 +64,7 @@ const HELP_SHORTCUT_ITEMS = [
   { shortcut: 'Esc', description: 'Close this help panel' },
   { shortcut: 'H', description: 'Hide or show controls (keeps slide counter visible)' },
   { shortcut: 'P', description: 'Toggle presentation mode (hides voice and follow-speech controls)' },
+  { shortcut: 'S', description: 'Show or hide the slide sidebar' },
 ];
 
 /**
@@ -115,6 +116,14 @@ export const groupSlidesBySection = slides =>
     }
     return groups;
   }, /** @type {{ section?: string, slideIndexes: number[] }[]} */ ([]));
+
+/**
+ * Falls back to the top edge when there is no header row to sit under.
+ * @param {'top' | 'below-header' | 'bottom' | 'hidden'} position
+ * @param {boolean} isHeaderRowVisible
+ */
+export const resolveProgressBarPosition = (position, isHeaderRowVisible) =>
+  position === 'below-header' && !isHeaderRowVisible ? 'top' : position;
 
 export const SIDEBAR_DEFAULT_WIDTH = 272;
 export const SIDEBAR_MIN_WIDTH = 224;

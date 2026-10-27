@@ -5,24 +5,22 @@ import ThemedButton from './ThemedButton';
 
 interface HeaderProps {
   activeSlide: SlideDefinition;
-  currentSlide: number;
   isFullscreen: boolean;
   isPresentationMode: boolean;
   isSidebarVisible: boolean;
+  showBreadcrumb: boolean;
   sidebarLabel: string;
-  slideCount: number;
   toggleSidebar: () => void;
   togglePresentationMode: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
   activeSlide,
-  currentSlide,
   isFullscreen,
   isPresentationMode,
   isSidebarVisible,
+  showBreadcrumb,
   sidebarLabel,
-  slideCount,
   toggleSidebar,
   togglePresentationMode,
 }) => {
@@ -30,7 +28,6 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <div className="progress-bar w-full" style={{ width: `${((currentSlide + 1) / slideCount) * 100}%` }}></div>
       {!isPresentationMode && !isFullscreen && (
         <div className={`fixed top-4 z-30 items-center gap-4 ${isSidebarVisible ? 'left-[calc(var(--sidebar-width)+1rem)] hidden md:flex' : 'left-4 flex'}`}>
           <ThemedButton
@@ -46,7 +43,7 @@ const Header: React.FC<HeaderProps> = ({
             <SidebarIcon className="h-5 w-5" />
             <span>{sidebarLabel}</span>
           </ThemedButton>
-          {activeSlide.section && (
+          {showBreadcrumb && activeSlide.section && (
             <nav aria-label="Breadcrumb" className="hidden min-w-0 sm:block">
               <ol className="flex min-w-0 items-center gap-2 text-sm">
                 <li className="shrink-0 font-semibold text-text">{activeSlide.section}</li>

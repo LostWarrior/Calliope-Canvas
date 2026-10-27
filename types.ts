@@ -23,6 +23,17 @@ export interface SlideDefinition {
   title?: string;
 }
 
+export interface HeaderConfig {
+  show?: boolean;
+  breadcrumb?: boolean;
+}
+
+export type ProgressBarPosition = 'top' | 'below-header' | 'bottom' | 'hidden';
+
+export interface ProgressBarConfig {
+  position?: ProgressBarPosition;
+}
+
 export interface SidebarConfig {
   label?: string;
   eyebrow?: string;
