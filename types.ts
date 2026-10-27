@@ -17,10 +17,23 @@ export interface DataPacket {
 export interface SlideDefinition {
   content: React.ReactNode;
   notes?: React.ReactNode[];
+  section?: string;
   speech?: {
     cues: string[];
   };
   title?: string;
+}
+
+export interface SlideGroup {
+  section?: string;
+  slideIndexes: number[];
+}
+
+export interface SidebarConfig {
+  label?: string;
+  eyebrow?: string;
+  title?: string;
+  footnote?: string;
 }
 
 export type VoiceAction =

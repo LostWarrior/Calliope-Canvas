@@ -484,6 +484,22 @@ body {
   animation: helpModalIn 180ms ease-out;
 }
 
+.slide-sidebar-panel {
+  animation: slideSidebarIn 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes slideSidebarIn {
+  from {
+    opacity: 0;
+    transform: translate3d(-1.5rem, 0, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 @keyframes helpModalIn {
   from {
     opacity: 0;
@@ -498,7 +514,8 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .slide-transition,
-  .help-modal-panel {
+  .help-modal-panel,
+  .slide-sidebar-panel {
     animation: none;
   }
 }

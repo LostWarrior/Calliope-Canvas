@@ -1,4 +1,4 @@
-import type { HelpShortcutItem, HelpShortcutSection, VoiceCommand } from './types.ts';
+import type { HelpShortcutItem, HelpShortcutSection, SlideGroup, VoiceCommand } from './types.ts';
 
 export const VOICE_COMMANDS: VoiceCommand[] = [
   { action: 'next', label: 'Next Slide', phrases: ['next slide please', 'next slide'] },
@@ -74,3 +74,14 @@ export const getSlideTransitionClass = (direction: 1 | -1) =>
   direction === 1
     ? 'slide-transition slide-transition-forward'
     : 'slide-transition slide-transition-backward';
+
+export const groupSlidesBySection = (slides: { section?: string }[]): SlideGroup[] =>
+  slides.reduce<SlideGroup[]>((groups, slide, index) => {
+    const lastGroup = groups[groups.length - 1];
+    if (lastGroup && lastGroup.section === slide.section) {
+      lastGroup.slideIndexes.push(index);
+    } else {
+      groups.push({ section: slide.section, slideIndexes: [index] });
+    }
+    return groups;
+  }, []);

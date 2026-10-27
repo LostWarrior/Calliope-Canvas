@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 
 import {
   getSlideTransitionClass,
+  groupSlidesBySection,
   isPresentationShortcutAllowed,
   getHelpShortcutSections,
   matchVoiceCommand,
@@ -49,4 +50,30 @@ test('checks every recognition alternative', () => {
 test('ignores misheard words inside normal speech', () => {
   assert.equal(matchVoiceCommand(['the next light']), undefined);
   assert.equal(matchVoiceCommand(['turn on the light']), undefined);
+});
+
+test('groups consecutive slides by section', () => {
+  assert.deepEqual(
+    groupSlidesBySection([{ section: 'Intro' }, { section: 'Intro' }, { section: 'Indexes' }, {}]),
+    [
+      { section: 'Intro', slideIndexes: [0, 1] },
+      { section: 'Indexes', slideIndexes: [2] },
+      { section: undefined, slideIndexes: [3] },
+    ],
+  );
+});
+
+test('keeps a flat list as one unnamed group', () => {
+  assert.deepEqual(groupSlidesBySection([{}, {}]), [{ section: undefined, slideIndexes: [0, 1] }]);
+});
+
+test('starts a new group when a section repeats after another section', () => {
+  assert.deepEqual(
+    groupSlidesBySection([{ section: 'A' }, { section: 'B' }, { section: 'A' }]).map(group => group.slideIndexes),
+    [[0], [1], [2]],
+  );
+});
+
+test('returns no groups for an empty deck', () => {
+  assert.deepEqual(groupSlidesBySection([]), []);
 });
