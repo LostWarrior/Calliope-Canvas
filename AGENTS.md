@@ -16,7 +16,7 @@ Calliope-Canvas is a React + TypeScript presentation framework. Slides are React
 - `components/HelpOverlay.tsx` — shift+? help overlay
 - `components/Icons.tsx` — SVG icons
 - `slides/` — individual slide components
-- `presentationBehavior.js` — pure animation/behavior logic (testable, no React)
+- `presentationBehavior.ts`, `speechFollowBehavior.ts`, `transcript.ts` — pure logic, no React; tests sit beside them as `*.test.ts`
 - `speech-recognition.d.ts` — ambient Web Speech API types
 
 ## Adding Slides
@@ -42,6 +42,7 @@ Notes in `[square brackets]` are automatically italicized in the speaker-notes w
 | Build | `npm run build` |
 | Preview build | `npm run preview` |
 | Type check only | `npx tsc --noEmit` |
+| Tests | `npm test` |
 
 Dev server runs on **http://localhost:3000**.
 
@@ -54,7 +55,7 @@ Dev server runs on **http://localhost:3000**.
 - Themes are `[data-theme='…']` blocks in `index.css` setting `--theme-*` RGB triplets; `@theme inline` maps them to utilities (`bg-canvas`, `text-muted`, `bg-primary/85`, …)
 - Style with semantic theme utilities, never fixed palette colours
 - No linter or formatter configured
-- No test runner configured in `package.json`; run `node --test presentationBehavior.test.js speechFollowBehavior.test.js`
+- Tests use `node:test` and run as TypeScript directly in Node (22.18+), with no test framework or loader. Relative imports between these modules need the `.ts` extension, and they can only import types from other files (`import type`)
 
 ## Architecture Notes
 
