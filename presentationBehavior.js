@@ -116,7 +116,7 @@ export const groupSlidesBySection = slides =>
     return groups;
   }, /** @type {{ section?: string, slideIndexes: number[] }[]} */ ([]));
 
-export const SIDEBAR_DEFAULT_WIDTH = 256;
+export const SIDEBAR_DEFAULT_WIDTH = 272;
 export const SIDEBAR_MIN_WIDTH = 224;
 export const SIDEBAR_MAX_WIDTH = 480;
 export const SIDEBAR_WIDTH_STEP = 16;
