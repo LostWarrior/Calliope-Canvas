@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import Footer from './components/Footer';
+import Header from './components/Header';
 import SlideSidebar from './components/SlideSidebar';
 import { ThemeProvider, useTheme } from './components/ThemeProvider';
 import type { SidebarConfig, SlideDefinition, VoiceAction } from './types';
@@ -10,8 +11,6 @@ import { getHelpShortcutSections, getSlideTransitionClass, isPresentationShortcu
 import { useSpeechRecognition, type FinalSpeechRecognitionResult } from './hooks/useSpeechRecognition';
 import { useSpeechFollow } from './hooks/useSpeechFollow';
 import { useTranscriptRecording } from './hooks/useTranscriptRecording';
-import ThemedButton from './components/ThemedButton';
-import { PresentationIcon, SidebarIcon } from './components/Icons';
 import TitleSlide from './slides/TitleSlide';
 import PlaceholderSlide from './slides/PlaceholderSlide';
 import { isThemeName } from './theme';
@@ -65,7 +64,6 @@ const DeckView: React.FC = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isSidebarVisible = isSidebarOpen && !isPresentationMode && !isFullscreen;
-  const sidebarToggleLabel = isSidebarVisible ? 'Hide sidebar' : 'Show sidebar';
   const activeSlide = slides[currentSlide];
   const { setTheme, theme } = useTheme();
 
@@ -344,54 +342,19 @@ const DeckView: React.FC = () => {
   return (
     <div className={`relative flex min-h-screen w-full flex-col items-center justify-center bg-canvas p-4 font-sans text-text ${isSidebarVisible ? 'md:pl-[17rem]' : ''}`}>
       {isSidebarVisible && (
-        <>
-          <button type="button" aria-label={sidebarToggleLabel} onClick={closeSidebar} className="fixed inset-0 z-30 bg-canvas/70 backdrop-blur-sm md:hidden" />
-          <SlideSidebar config={sidebarConfig} slides={slides} currentSlide={currentSlide} onClose={closeSidebar} onSelect={index => {
-            goToSlide(index);
-            if (window.matchMedia('(max-width: 767px)').matches) closeSidebar();
-          }} />
-        </>
+        <SlideSidebar config={sidebarConfig} slides={slides} currentSlide={currentSlide} onClose={closeSidebar} onSelect={goToSlide} />
       )}
-      <div className="progress-bar w-full" style={{ width: `${((currentSlide + 1) / slides.length) * 100}%` }}></div>
-      {!isPresentationMode && !isFullscreen && (
-        <div className={`fixed top-4 z-30 items-center gap-4 ${isSidebarVisible ? 'left-[17rem] hidden md:flex' : 'left-4 flex'}`}>
-          <ThemedButton
-            id="slide-sidebar-toggle"
-            onClick={() => setIsSidebarOpen(open => !open)}
-            variant="ghost"
-            title={sidebarToggleLabel}
-            aria-label={sidebarToggleLabel}
-            aria-expanded={isSidebarVisible}
-            aria-controls={isSidebarVisible ? 'slide-sidebar' : undefined}
-            className="gap-2 border border-border"
-          >
-            <SidebarIcon className="h-5 w-5" />
-            <span>{sidebarConfig.label || 'Slides'}</span>
-          </ThemedButton>
-          {activeSlide.section && (
-            <nav aria-label="Breadcrumb" className="hidden min-w-0 sm:block">
-              <ol className="flex min-w-0 items-center gap-2 text-sm">
-                <li className="shrink-0 font-semibold text-text">{activeSlide.section}</li>
-                {activeSlide.title && (
-                  <li aria-current="page" className="flex min-w-0 items-center gap-2 text-muted">
-                    <span aria-hidden="true" className="opacity-60">/</span>
-                    <span className="max-w-[40vw] truncate">{activeSlide.title}</span>
-                  </li>
-                )}
-              </ol>
-            </nav>
-          )}
-        </div>
-      )}
-      <ThemedButton
-        onClick={togglePresentationMode}
-        variant={isPresentationMode ? 'primary' : 'ghost'}
-        title="Toggle presentation mode (P)"
-        aria-pressed={isPresentationMode}
-        className="fixed top-4 right-4 z-30"
-      >
-        <PresentationIcon className="h-5 w-5" />
-      </ThemedButton>
+      <Header
+        activeSlide={activeSlide}
+        currentSlide={currentSlide}
+        isFullscreen={isFullscreen}
+        isPresentationMode={isPresentationMode}
+        isSidebarVisible={isSidebarVisible}
+        sidebarLabel={sidebarConfig.label || 'Slides'}
+        slideCount={slides.length}
+        toggleSidebar={() => setIsSidebarOpen(open => !open)}
+        togglePresentationMode={togglePresentationMode}
+      />
       <main className="relative z-0 w-full max-w-7xl grow flex flex-col items-center justify-center">
         <div
           className={`presentation-stage w-full ${animationsPaused ? 'animations-paused' : ''}`}
