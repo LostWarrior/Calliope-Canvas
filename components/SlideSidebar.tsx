@@ -67,10 +67,10 @@ const SlideSidebar: React.FC<SlideSidebarProps> = ({ config, slides, currentSlid
           aria-label={`Go to slide ${index + 1}: ${title}`}
           aria-current={isCurrent ? 'step' : undefined}
           onClick={() => selectSlide(index)}
-          className={`flex w-full items-baseline gap-3 rounded-lg px-3 py-2 text-left transition-colors duration-motion outline-hidden focus-visible:ring-2 focus-visible:ring-focus ${isCurrent ? 'bg-primary/10 text-primary' : 'text-muted hover:bg-elevated hover:text-text'}`}
+          className={`flex w-full items-baseline gap-3 rounded-md px-2.5 py-1.5 text-left transition-colors duration-motion outline-hidden focus-visible:ring-2 focus-visible:ring-focus ${isCurrent ? 'bg-primary/10 text-primary' : 'text-muted hover:bg-elevated hover:text-text'}`}
         >
-          <span aria-hidden="true" className="shrink-0 font-mono text-[0.7rem] opacity-70">{formatNumber(index + 1)}</span>
-          <span className={`min-w-0 break-words text-sm leading-5 ${isCurrent ? 'font-semibold' : ''}`}>{title}</span>
+          <span aria-hidden="true" className="shrink-0 font-mono text-[0.65rem] opacity-70">{formatNumber(index + 1)}</span>
+          <span className={`min-w-0 break-words text-xs leading-4 ${isCurrent ? 'font-semibold' : ''}`}>{title}</span>
         </button>
       </li>
     );
@@ -85,14 +85,12 @@ const SlideSidebar: React.FC<SlideSidebarProps> = ({ config, slides, currentSlid
     <>
       <button type="button" aria-label="Hide sidebar" onClick={onClose} className="fixed inset-0 z-30 bg-canvas/70 backdrop-blur-sm md:hidden" />
       <aside id="slide-sidebar" aria-labelledby={headingId} className="slide-sidebar-panel fixed inset-y-0 left-0 z-40 flex w-64 max-w-[calc(100vw-3rem)] md:w-(--sidebar-width) flex-col overflow-hidden border-r border-border bg-surface shadow-[12px_0_48px_rgb(0_0_0_/_0.12)] md:shadow-none">
-        <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-[radial-gradient(ellipse_at_top_left,_rgb(var(--theme-primary)_/_0.14),_transparent_70%)]" />
-
-        <div className="relative flex shrink-0 items-start justify-between gap-3 px-5 pt-6 pb-4">
+        <div className="relative flex shrink-0 items-center justify-between gap-3 px-5 pt-6 pb-4">
           <div className="min-w-0">
             {config.eyebrow && (
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-primary">{config.eyebrow}</p>
+              <p className="text-[0.68rem] font-medium uppercase tracking-[0.12em] text-muted">{config.eyebrow}</p>
             )}
-            <h2 id={headingId} className={`break-words text-xl font-semibold text-text ${config.eyebrow ? 'mt-2' : ''}`}>
+            <h2 id={headingId} className={`break-words text-xl font-bold tracking-tight text-text ${config.eyebrow ? 'mt-1' : ''}`}>
               {config.title || label}
             </h2>
           </div>
@@ -129,7 +127,7 @@ const SlideSidebar: React.FC<SlideSidebarProps> = ({ config, slides, currentSlid
 
             return (
               <section key={firstIndex} aria-labelledby={groupHeadingId} className="py-1">
-                <div className={`flex items-baseline gap-3 rounded-2xl border px-3 py-3 transition-colors duration-motion ${isCurrentGroup ? 'border-primary/25 bg-primary/10' : 'border-transparent'}`}>
+                <div className={`flex items-baseline gap-3 rounded-xl px-3 py-3 transition-colors duration-motion ${isCurrentGroup ? 'bg-primary/10' : ''}`}>
                   <span aria-hidden="true" className="shrink-0 font-mono text-xs font-semibold text-primary">{formatNumber(group.number)}</span>
                   <div className="min-w-0">
                     <h3 id={groupHeadingId} className="break-words text-sm font-semibold leading-5 text-text">{group.section}</h3>
