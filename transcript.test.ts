@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { formatTranscript, getTranscriptFileName } from './transcript.js';
+import { formatTranscript, getTranscriptFileName } from './transcript.ts';
 
 const slides = [{ title: 'Welcome' }, { title: 'Pricing' }];
 const at = (hours, minutes, seconds) => new Date(2026, 9, 3, hours, minutes, seconds).getTime();

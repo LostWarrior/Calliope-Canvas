@@ -1,15 +1,10 @@
-// @ts-check
-
-import { matchVoiceCommand } from './presentationBehavior.js';
+import { matchVoiceCommand } from './presentationBehavior.ts';
 
 export const SPEECH_FOLLOW_MIN_CONFIDENCE = 0.7;
 export const SPEECH_FOLLOW_MIN_SCORE = 0.75;
 export const SPEECH_FOLLOW_COOLDOWN_MS = 3000;
 
-/**
- * @param {string} transcript
- */
-export const normalizeTranscript = transcript =>
+export const normalizeTranscript = (transcript: string) =>
   transcript
     .toLowerCase()
     .replace(/['’]/g, '')
@@ -17,11 +12,7 @@ export const normalizeTranscript = transcript =>
     .replace(/\s+/g, ' ')
     .trim();
 
-/**
- * @param {string} normalizedTranscript
- * @param {string} normalizedCue
- */
-export const scoreCue = (normalizedTranscript, normalizedCue) => {
+export const scoreCue = (normalizedTranscript: string, normalizedCue: string) => {
   if (!normalizedTranscript || !normalizedCue) {
     return 0;
   }
@@ -37,12 +28,8 @@ export const scoreCue = (normalizedTranscript, normalizedCue) => {
   return matchedTokens / cueTokens.length;
 };
 
-/**
- * @param {string} normalizedTranscript
- * @param {string[]} cues
- */
-export const getBestCueMatch = (normalizedTranscript, cues) =>
-  cues.reduce(
+export const getBestCueMatch = (normalizedTranscript: string, cues: string[]) =>
+  cues.reduce<{ cue: string | null; score: number }>(
     (bestMatch, cue) => {
       const score = scoreCue(normalizedTranscript, normalizeTranscript(cue));
 
@@ -51,27 +38,22 @@ export const getBestCueMatch = (normalizedTranscript, cues) =>
     { cue: null, score: 0 }
   );
 
-/**
- * @typedef {{
- *  enabled: boolean,
- *  isMatchingBlocked: boolean,
- *  currentSlide: number,
- *  slideCount: number,
- *  nextSlideCues?: string[],
- *  normalizedTranscript: string,
- *  confidence: number,
- *  cooldownMs?: number,
- *  now: number,
- *  lastAutoAdvanceAt: number | null,
- *  lastAutoAdvanceResultId: string | null,
- *  resultId: string,
- * }} SpeechFollowInput
- */
+export type SpeechFollowInput = {
+  enabled: boolean;
+  isMatchingBlocked: boolean;
+  currentSlide: number;
+  slideCount: number;
+  nextSlideCues?: string[];
+  normalizedTranscript: string;
+  confidence: number;
+  cooldownMs?: number;
+  now: number;
+  lastAutoAdvanceAt: number | null;
+  lastAutoAdvanceResultId: string | null;
+  resultId: string;
+};
 
-/**
- * @param {SpeechFollowInput} input
- */
-export const getSpeechFollowDecision = input => {
+export const getSpeechFollowDecision = (input: SpeechFollowInput) => {
   if (!input.enabled) return { shouldAdvance: false, reason: 'disabled' };
   if (input.isMatchingBlocked) return { shouldAdvance: false, reason: 'blocked' };
   if (input.currentSlide >= input.slideCount - 1) return { shouldAdvance: false, reason: 'end-of-deck' };
@@ -101,11 +83,7 @@ export const getSpeechFollowDecision = input => {
   };
 };
 
-/**
- * @param {string[]} normalizedAlternatives
- * @param {SpeechFollowInput} speechFollowInput
- */
-export const getRecognitionDecision = (normalizedAlternatives, speechFollowInput) => {
+export const getRecognitionDecision = (normalizedAlternatives: string[], speechFollowInput: SpeechFollowInput) => {
   const command = matchVoiceCommand(normalizedAlternatives);
   if (command) return { type: 'command', command };
 

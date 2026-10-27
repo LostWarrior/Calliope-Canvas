@@ -6,7 +6,7 @@ import {
   getSpeechFollowDecision,
   normalizeTranscript,
   scoreCue,
-} from './speechFollowBehavior.js';
+} from './speechFollowBehavior.ts';
 
 const baseInput = {
   confidence: 0.92,
