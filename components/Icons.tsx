@@ -1,5 +1,18 @@
 import React from 'react';
 
+export const CloseIcon: React.FC<{className?: string}> = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" className={className || 'h-4 w-4'} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75} aria-hidden="true">
+    <path d="M6 6l12 12M18 6 6 18" strokeLinecap="round" />
+  </svg>
+);
+
+export const SidebarIcon: React.FC<{className?: string}> = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" className={className || 'h-5 w-5'} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75} aria-hidden="true">
+    <rect x="3" y="4" width="18" height="16" rx="2" />
+    <path d="M9 4v16M5.5 8h1M5.5 12h1M5.5 16h1" strokeLinecap="round" />
+  </svg>
+);
+
 export const PostgresIcon: React.FC = () => (
     <img src="../images/postgres-logo.png" alt="Postgres Icon" />
 );

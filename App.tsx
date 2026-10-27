@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import Footer from './components/Footer';
+import SlideSidebar from './components/SlideSidebar';
 import { ThemeProvider, useTheme } from './components/ThemeProvider';
-import type { SlideDefinition, VoiceAction } from './types';
+import type { SidebarConfig, SlideDefinition, VoiceAction } from './types';
 import { isSpeakerNotesRoute, SpeakerNotesView, SPEAKER_NOTES_QUERY_PARAM, SPEAKER_NOTES_CHANNEL, postSpeakerNotesDeckClosed, postSpeakerNotesState, isSpeakerNotesMessage, type DeckState } from './SpeakerNotes';
 import HelpOverlay from './components/HelpOverlay';
 import { getHelpShortcutSections, getSlideTransitionClass, isPresentationShortcutAllowed } from './presentationBehavior';
@@ -10,7 +11,7 @@ import { useSpeechRecognition, type FinalSpeechRecognitionResult } from './hooks
 import { useSpeechFollow } from './hooks/useSpeechFollow';
 import { useTranscriptRecording } from './hooks/useTranscriptRecording';
 import ThemedButton from './components/ThemedButton';
-import { PresentationIcon } from './components/Icons';
+import { PresentationIcon, SidebarIcon } from './components/Icons';
 import TitleSlide from './slides/TitleSlide';
 import PlaceholderSlide from './slides/PlaceholderSlide';
 import { isThemeName } from './theme';
@@ -39,6 +40,10 @@ export const slides: SlideDefinition[] = [
   },
 ];
 
+export const sidebarConfig: SidebarConfig = {
+  label: 'Slides',
+};
+
 const MIN_ZOOM_LEVEL = 0.8;
 const MAX_ZOOM_LEVEL = 1.4;
 const ZOOM_STEP = 0.1;
@@ -58,7 +63,16 @@ const DeckView: React.FC = () => {
   const [isFooterHidden, setIsFooterHidden] = useState(false);
   const [isPresentationMode, setIsPresentationMode] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const isSidebarVisible = isSidebarOpen && !isPresentationMode && !isFullscreen;
+  const sidebarToggleLabel = isSidebarVisible ? 'Hide sidebar' : 'Show sidebar';
+  const activeSlide = slides[currentSlide];
   const { setTheme, theme } = useTheme();
+
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
+    requestAnimationFrame(() => document.getElementById('slide-sidebar-toggle')?.focus());
+  };
 
   const currentSlideRef = useRef(currentSlide);
   const deckStateRef = useRef<DeckState>({ canRecord: false, currentSlide, isRecording: false, theme, transcript: [] });
@@ -273,6 +287,15 @@ const DeckView: React.FC = () => {
         return;
       }
 
+      if (e.target instanceof HTMLElement && e.target.closest('input, textarea, select, [contenteditable="true"]')) {
+        return;
+      }
+
+      // Let native buttons activate with Space without also toggling animations.
+      if (e.key === ' ' && e.target instanceof HTMLElement && e.target.closest('button')) {
+        return;
+      }
+
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
         e.preventDefault();
         goToNext();
@@ -319,8 +342,47 @@ const DeckView: React.FC = () => {
   }, [animationsPaused, isHelpOpen, isVoiceEnabled, requestMicrophonePermission, setVoiceControlsEnabled, undoAutoAdvance]);
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 bg-canvas font-sans text-text relative">
+    <div className={`relative flex min-h-screen w-full flex-col items-center justify-center bg-canvas p-4 font-sans text-text ${isSidebarVisible ? 'md:pl-[17rem]' : ''}`}>
+      {isSidebarVisible && (
+        <>
+          <button type="button" aria-label={sidebarToggleLabel} onClick={closeSidebar} className="fixed inset-0 z-30 bg-canvas/70 backdrop-blur-sm md:hidden" />
+          <SlideSidebar config={sidebarConfig} slides={slides} currentSlide={currentSlide} onClose={closeSidebar} onSelect={index => {
+            goToSlide(index);
+            if (window.matchMedia('(max-width: 767px)').matches) closeSidebar();
+          }} />
+        </>
+      )}
       <div className="progress-bar w-full" style={{ width: `${((currentSlide + 1) / slides.length) * 100}%` }}></div>
+      {!isPresentationMode && !isFullscreen && (
+        <div className={`fixed top-4 z-30 items-center gap-4 ${isSidebarVisible ? 'left-[17rem] hidden md:flex' : 'left-4 flex'}`}>
+          <ThemedButton
+            id="slide-sidebar-toggle"
+            onClick={() => setIsSidebarOpen(open => !open)}
+            variant="ghost"
+            title={sidebarToggleLabel}
+            aria-label={sidebarToggleLabel}
+            aria-expanded={isSidebarVisible}
+            aria-controls={isSidebarVisible ? 'slide-sidebar' : undefined}
+            className="gap-2 border border-border"
+          >
+            <SidebarIcon className="h-5 w-5" />
+            <span>{sidebarConfig.label || 'Slides'}</span>
+          </ThemedButton>
+          {activeSlide.section && (
+            <nav aria-label="Breadcrumb" className="hidden min-w-0 sm:block">
+              <ol className="flex min-w-0 items-center gap-2 text-sm">
+                <li className="shrink-0 font-semibold text-text">{activeSlide.section}</li>
+                {activeSlide.title && (
+                  <li aria-current="page" className="flex min-w-0 items-center gap-2 text-muted">
+                    <span aria-hidden="true" className="opacity-60">/</span>
+                    <span className="max-w-[40vw] truncate">{activeSlide.title}</span>
+                  </li>
+                )}
+              </ol>
+            </nav>
+          )}
+        </div>
+      )}
       <ThemedButton
         onClick={togglePresentationMode}
         variant={isPresentationMode ? 'primary' : 'ghost'}
@@ -337,7 +399,7 @@ const DeckView: React.FC = () => {
         >
           <div className="slide-container w-full">
             <div key={currentSlide} className={getSlideTransitionClass(slideDirection)}>
-              {slides[currentSlide].content}
+              {activeSlide.content}
             </div>
           </div>
         </div>

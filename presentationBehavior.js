@@ -100,3 +100,18 @@ export const getSlideTransitionClass = direction =>
   direction === 1
     ? 'slide-transition slide-transition-forward'
     : 'slide-transition slide-transition-backward';
+
+/**
+ * @param {{ section?: string }[]} slides
+ * @returns {{ section?: string, slideIndexes: number[] }[]}
+ */
+export const groupSlidesBySection = slides =>
+  slides.reduce((groups, slide, index) => {
+    const lastGroup = groups[groups.length - 1];
+    if (lastGroup && lastGroup.section === slide.section) {
+      lastGroup.slideIndexes.push(index);
+    } else {
+      groups.push({ section: slide.section, slideIndexes: [index] });
+    }
+    return groups;
+  }, /** @type {{ section?: string, slideIndexes: number[] }[]} */ ([]));

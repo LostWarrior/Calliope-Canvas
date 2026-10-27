@@ -60,6 +60,29 @@ Speech-follow matching stays in the browser. Add explicit cues to the slide bein
 }
 ```
 
+### Slide Sidebar
+
+Click **Slides** at the top left to open a numbered list of slide titles. Click a title to jump to that slide; the current slide is highlighted. Close it with the × button or Escape. In the list, Up/Down and Home/End move focus, and Enter or Space selects a slide.
+
+The sidebar follows the selected theme. It hides during presentation mode and fullscreen, then returns if it was open. On smaller screens it overlays the deck and closes after you select a slide.
+
+Add a `section` to slides to group consecutive slides under a numbered heading. The current section and slide title also appear as a breadcrumb next to the toggle:
+
+```tsx
+{ content: <IndexScanSlide />, section: 'Indices and query performance', title: 'SELECT with a B-tree index' }
+```
+
+Set the sidebar text with `sidebarConfig` in `App.tsx`. Every field is optional:
+
+```tsx
+export const sidebarConfig: SidebarConfig = {
+  label: 'Slides',                // toggle button text, the default
+  eyebrow: 'PostgreSQL training', // small line above the title
+  title: 'Your slides',           // sidebar heading, defaults to the label
+  footnote: 'Learn, predict, then try it in the lab.',
+};
+```
+
 ### Speaker Notes
 
 Slides can include optional speaker notes alongside the rendered slide component:
