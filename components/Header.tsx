@@ -32,7 +32,7 @@ const Header: React.FC<HeaderProps> = ({
     <>
       <div className="progress-bar w-full" style={{ width: `${((currentSlide + 1) / slideCount) * 100}%` }}></div>
       {!isPresentationMode && !isFullscreen && (
-        <div className={`fixed top-4 z-30 items-center gap-4 ${isSidebarVisible ? 'left-[17rem] hidden md:flex' : 'left-4 flex'}`}>
+        <div className={`fixed top-4 z-30 items-center gap-4 ${isSidebarVisible ? 'left-[calc(var(--sidebar-width)+1rem)] hidden md:flex' : 'left-4 flex'}`}>
           <ThemedButton
             id="slide-sidebar-toggle"
             onClick={toggleSidebar}

@@ -85,3 +85,21 @@ export const groupSlidesBySection = (slides: { section?: string }[]): SlideGroup
     }
     return groups;
   }, []);
+
+export const SIDEBAR_DEFAULT_WIDTH = 256;
+export const SIDEBAR_MIN_WIDTH = 224;
+export const SIDEBAR_MAX_WIDTH = 480;
+export const SIDEBAR_WIDTH_STEP = 16;
+
+export const getSidebarMaxWidth = (viewportWidth: number) =>
+  Math.max(SIDEBAR_MIN_WIDTH, Math.min(SIDEBAR_MAX_WIDTH, Math.floor(viewportWidth / 2)));
+
+export const clampSidebarWidth = (width: number, viewportWidth: number) =>
+  Math.round(Math.min(getSidebarMaxWidth(viewportWidth), Math.max(SIDEBAR_MIN_WIDTH, width)));
+
+export const parseSidebarWidth = (storedWidth: string | null) => {
+  const width = Number(storedWidth);
+  return storedWidth && Number.isFinite(width)
+    ? Math.round(Math.min(SIDEBAR_MAX_WIDTH, Math.max(SIDEBAR_MIN_WIDTH, width)))
+    : SIDEBAR_DEFAULT_WIDTH;
+};

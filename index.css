@@ -484,6 +484,11 @@ body {
   animation: helpModalIn 180ms ease-out;
 }
 
+body.is-resizing-sidebar {
+  cursor: col-resize;
+  user-select: none;
+}
+
 .slide-sidebar-panel {
   animation: slideSidebarIn 220ms cubic-bezier(0.22, 1, 0.36, 1);
 }
