@@ -106,6 +106,6 @@ export const clampSidebarWidth = (width: number, viewportWidth: number) =>
 export const parseSidebarWidth = (storedWidth: string | null) => {
   const width = Number(storedWidth);
   return storedWidth && Number.isFinite(width)
-    ? Math.round(Math.min(SIDEBAR_MAX_WIDTH, Math.max(SIDEBAR_MIN_WIDTH, width)))
+    ? clampSidebarWidth(width, Number.POSITIVE_INFINITY)
     : SIDEBAR_DEFAULT_WIDTH;
 };

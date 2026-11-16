@@ -45,6 +45,8 @@ export const SIDEBAR_CONFIG: SidebarConfig = {
   label: 'Slides',
 };
 
+const SIDEBAR_LABEL = SIDEBAR_CONFIG.label || 'Slides';
+
 export const HEADER_CONFIG: HeaderConfig = {
   show: true,
   breadcrumb: true,
@@ -78,9 +80,10 @@ const DeckView: React.FC = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(() => parseSidebarWidth(window.localStorage.getItem(SIDEBAR_WIDTH_STORAGE_KEY)));
-  const isSidebarVisible = isSidebarOpen && !isPresentationMode && !isFullscreen;
+  const isChromeVisible = !isPresentationMode && !isFullscreen;
+  const isSidebarVisible = isSidebarOpen && isChromeVisible;
   const isHeaderVisible = HEADER_CONFIG.show !== false;
-  const progressBarPosition = resolveProgressBarPosition(PROGRESS_BAR_CONFIG.position ?? 'top', isHeaderVisible && !isPresentationMode && !isFullscreen);
+  const progressBarPosition = resolveProgressBarPosition(PROGRESS_BAR_CONFIG.position ?? 'top', isHeaderVisible && isChromeVisible);
   const [isSmallScreen, setIsSmallScreen] = useState(() => window.matchMedia(SMALL_SCREEN_QUERY).matches);
   const isSidebarOverlay = isSidebarVisible && isSmallScreen;
   const deckRootRef = useRef<HTMLDivElement>(null);
@@ -365,7 +368,7 @@ const DeckView: React.FC = () => {
       } else if (e.key === 'p' || e.key === 'P') {
         e.preventDefault();
         togglePresentationMode();
-      } else if ((e.key === 's' || e.key === 'S') && !e.metaKey && !e.ctrlKey && !e.altKey && !isPresentationMode && !isFullscreen) {
+      } else if ((e.key === 's' || e.key === 'S') && !e.metaKey && !e.ctrlKey && !e.altKey && isChromeVisible) {
         e.preventDefault();
         toggleSidebar();
       } else if (e.key === '+') {
@@ -396,7 +399,7 @@ const DeckView: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [animationsPaused, isFullscreen, isHelpOpen, isPresentationMode, isSidebarVisible, isVoiceEnabled, requestMicrophonePermission, setVoiceControlsEnabled, undoAutoAdvance]);
+  }, [animationsPaused, isFullscreen, isHelpOpen, isChromeVisible, isPresentationMode, isSidebarVisible, isVoiceEnabled, requestMicrophonePermission, setVoiceControlsEnabled, undoAutoAdvance]);
 
   return (
     <div
@@ -405,7 +408,7 @@ const DeckView: React.FC = () => {
       style={{ '--sidebar-width': `min(${sidebarWidth}px, 50vw)` } as React.CSSProperties}
     >
       {isSidebarVisible && (
-        <SlideSidebar isUserOpened={sidebarOpenedByUserRef.current} config={SIDEBAR_CONFIG} slides={slides} currentSlide={currentSlide} onClose={closeSidebar} onResize={setSidebarWidth} onResizeEnd={saveSidebarWidth} onSelect={goToSlide} width={sidebarWidth} />
+        <SlideSidebar isUserOpened={sidebarOpenedByUserRef.current} config={SIDEBAR_CONFIG} label={SIDEBAR_LABEL} slides={slides} currentSlide={currentSlide} onClose={closeSidebar} onResize={setSidebarWidth} onResizeEnd={saveSidebarWidth} onSelect={goToSlide} width={sidebarWidth} />
       )}
       {progressBarPosition !== 'hidden' && (
         <ProgressBar currentSlide={currentSlide} isSidebarVisible={isSidebarVisible} position={progressBarPosition} slideCount={slides.length} />
@@ -416,11 +419,11 @@ const DeckView: React.FC = () => {
       {isHeaderVisible && (
         <Header
           activeSlide={activeSlide}
-          isFullscreen={isFullscreen}
+          isChromeVisible={isChromeVisible}
           isPresentationMode={isPresentationMode}
           isSidebarVisible={isSidebarVisible}
           showBreadcrumb={HEADER_CONFIG.breadcrumb !== false}
-          sidebarLabel={SIDEBAR_CONFIG.label || 'Slides'}
+          sidebarLabel={SIDEBAR_LABEL}
           toggleSidebar={toggleSidebar}
           togglePresentationMode={togglePresentationMode}
         />

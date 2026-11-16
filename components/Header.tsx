@@ -6,7 +6,7 @@ import ThemedButton from './ThemedButton';
 
 interface HeaderProps {
   activeSlide: SlideDefinition;
-  isFullscreen: boolean;
+  isChromeVisible: boolean;
   isPresentationMode: boolean;
   isSidebarVisible: boolean;
   showBreadcrumb: boolean;
@@ -17,7 +17,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({
   activeSlide,
-  isFullscreen,
+  isChromeVisible,
   isPresentationMode,
   isSidebarVisible,
   showBreadcrumb,
@@ -29,7 +29,7 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      {!isPresentationMode && !isFullscreen && (
+      {isChromeVisible && (
         <div className={`fixed top-4 z-30 items-center gap-4 ${isSidebarVisible ? 'left-[calc(var(--sidebar-width)+1rem)] hidden md:flex' : 'left-4 flex'}`}>
           <ThemedButton
             id="slide-sidebar-toggle"

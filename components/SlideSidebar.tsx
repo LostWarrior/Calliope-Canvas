@@ -7,6 +7,7 @@ import ThemedButton from './ThemedButton';
 interface SlideSidebarProps {
   isUserOpened: boolean;
   config: SidebarConfig;
+  label: string;
   slides: SlideDefinition[];
   currentSlide: number;
   onSelect: (index: number) => void;
@@ -18,14 +19,13 @@ interface SlideSidebarProps {
 
 const formatNumber = (value: number) => String(value).padStart(2, '0');
 
-const SlideSidebar: React.FC<SlideSidebarProps> = ({ isUserOpened, config, slides, currentSlide, onSelect, onClose, onResize, onResizeEnd, width }) => {
+const SlideSidebar: React.FC<SlideSidebarProps> = ({ isUserOpened, config, label, slides, currentSlide, onSelect, onClose, onResize, onResizeEnd, width }) => {
   const slideButtons = useRef<(HTMLButtonElement | null)[]>([]);
   const headingId = useId();
   const groups = useMemo(() => {
     let sectionNumber = 0;
     return groupSlidesBySection(slides).map(group => ({ ...group, number: group.section ? ++sectionNumber : 0 }));
   }, [slides]);
-  const label = config.label || 'Slides';
   const [isResizing, setIsResizing] = useState(false);
   const [viewportWidth, setViewportWidth] = useState(() => window.innerWidth);
   const maxWidth = getSidebarMaxWidth(viewportWidth);
