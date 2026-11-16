@@ -12,12 +12,13 @@ interface SlideSidebarProps {
   onSelect: (index: number) => void;
   onClose: () => void;
   onResize: (width: number) => void;
+  onResizeEnd: (width: number) => void;
   width: number;
 }
 
 const formatNumber = (value: number) => String(value).padStart(2, '0');
 
-const SlideSidebar: React.FC<SlideSidebarProps> = ({ isUserOpened, config, slides, currentSlide, onSelect, onClose, onResize, width }) => {
+const SlideSidebar: React.FC<SlideSidebarProps> = ({ isUserOpened, config, slides, currentSlide, onSelect, onClose, onResize, onResizeEnd, width }) => {
   const slideButtons = useRef<(HTMLButtonElement | null)[]>([]);
   const headingId = useId();
   const groups = useMemo(() => {
@@ -51,7 +52,22 @@ const SlideSidebar: React.FC<SlideSidebarProps> = ({ isUserOpened, config, slide
     return () => document.body.classList.remove('is-resizing-sidebar');
   }, [isResizing]);
 
-  const resizeTo = (nextWidth: number) => onResize(clampSidebarWidth(nextWidth, viewportWidth));
+  const latestWidth = useRef(effectiveWidth);
+
+  const resizeTo = (nextWidth: number) => {
+    latestWidth.current = clampSidebarWidth(nextWidth, viewportWidth);
+    onResize(latestWidth.current);
+  };
+
+  const resizeAndSave = (nextWidth: number) => {
+    resizeTo(nextWidth);
+    onResizeEnd(latestWidth.current);
+  };
+
+  const endPointerResize = () => {
+    setIsResizing(false);
+    onResizeEnd(latestWidth.current);
+  };
 
   const handleResizeKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     const nextWidth = {
@@ -63,7 +79,7 @@ const SlideSidebar: React.FC<SlideSidebarProps> = ({ isUserOpened, config, slide
     if (nextWidth === undefined) return;
     event.preventDefault();
     event.stopPropagation();
-    resizeTo(nextWidth);
+    resizeAndSave(nextWidth);
   };
 
   const renderSlide = (index: number) => {
@@ -168,18 +184,19 @@ const SlideSidebar: React.FC<SlideSidebarProps> = ({ isUserOpened, config, slide
           aria-valuenow={effectiveWidth}
           title="Drag to resize, double-click to reset"
           onKeyDown={handleResizeKeyDown}
-          onDoubleClick={() => resizeTo(SIDEBAR_DEFAULT_WIDTH)}
+          onDoubleClick={() => resizeAndSave(SIDEBAR_DEFAULT_WIDTH)}
           onPointerDown={event => {
             if (event.button !== 0) return;
             event.preventDefault();
             event.currentTarget.setPointerCapture(event.pointerId);
+            latestWidth.current = effectiveWidth;
             setIsResizing(true);
           }}
           onPointerMove={event => {
             if (event.currentTarget.hasPointerCapture(event.pointerId)) resizeTo(event.clientX);
           }}
-          onPointerUp={() => setIsResizing(false)}
-          onPointerCancel={() => setIsResizing(false)}
+          onPointerUp={endPointerResize}
+          onPointerCancel={endPointerResize}
           className="group absolute inset-y-0 right-0 z-10 hidden w-2 cursor-col-resize touch-none outline-hidden md:block"
         >
           <span aria-hidden="true" className={`absolute inset-y-0 right-0 w-0.5 bg-primary transition-opacity duration-motion group-hover:opacity-100 group-focus-visible:opacity-100 ${isResizing ? 'opacity-100' : 'opacity-0'}`} />

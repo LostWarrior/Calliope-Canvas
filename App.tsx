@@ -106,9 +106,9 @@ const DeckView: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    window.localStorage.setItem(SIDEBAR_WIDTH_STORAGE_KEY, String(sidebarWidth));
-  }, [sidebarWidth]);
+  const saveSidebarWidth = (width: number) => {
+    window.localStorage.setItem(SIDEBAR_WIDTH_STORAGE_KEY, String(width));
+  };
 
   const currentSlideRef = useRef(currentSlide);
   const deckStateRef = useRef<DeckState>({ canRecord: false, currentSlide, isRecording: false, theme, transcript: [] });
@@ -385,7 +385,7 @@ const DeckView: React.FC = () => {
       style={{ '--sidebar-width': `min(${sidebarWidth}px, 50vw)` } as React.CSSProperties}
     >
       {isSidebarVisible && (
-        <SlideSidebar isUserOpened={sidebarOpenedByUserRef.current} config={sidebarConfig} slides={slides} currentSlide={currentSlide} onClose={closeSidebar} onResize={setSidebarWidth} onSelect={goToSlide} width={sidebarWidth} />
+        <SlideSidebar isUserOpened={sidebarOpenedByUserRef.current} config={sidebarConfig} slides={slides} currentSlide={currentSlide} onClose={closeSidebar} onResize={setSidebarWidth} onResizeEnd={saveSidebarWidth} onSelect={goToSlide} width={sidebarWidth} />
       )}
       {progressBarPosition !== 'hidden' && (
         <ProgressBar currentSlide={currentSlide} isSidebarVisible={isSidebarVisible} position={progressBarPosition} slideCount={slides.length} />
