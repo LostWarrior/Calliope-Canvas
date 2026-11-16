@@ -16,6 +16,8 @@
     ],
     "moduleResolution": "bundler",
     "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
     "moduleDetection": "force",
     "jsx": "react-jsx",
     "paths": {
