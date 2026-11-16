@@ -26,7 +26,9 @@ const SlideSidebar: React.FC<SlideSidebarProps> = ({ isUserOpened, config, slide
   }, [slides]);
   const label = config.label || 'Slides';
   const [isResizing, setIsResizing] = useState(false);
-  const maxWidth = getSidebarMaxWidth(window.innerWidth);
+  const [viewportWidth, setViewportWidth] = useState(() => window.innerWidth);
+  const maxWidth = getSidebarMaxWidth(viewportWidth);
+  const effectiveWidth = clampSidebarWidth(width, viewportWidth);
 
   const shouldAnimateIn = useRef(isUserOpened).current;
 
@@ -39,16 +41,22 @@ const SlideSidebar: React.FC<SlideSidebarProps> = ({ isUserOpened, config, slide
   }, [currentSlide]);
 
   useEffect(() => {
+    const handleResize = () => setViewportWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
     document.body.classList.toggle('is-resizing-sidebar', isResizing);
     return () => document.body.classList.remove('is-resizing-sidebar');
   }, [isResizing]);
 
-  const resizeTo = (nextWidth: number) => onResize(clampSidebarWidth(nextWidth, window.innerWidth));
+  const resizeTo = (nextWidth: number) => onResize(clampSidebarWidth(nextWidth, viewportWidth));
 
   const handleResizeKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     const nextWidth = {
-      ArrowLeft: width - SIDEBAR_WIDTH_STEP,
-      ArrowRight: width + SIDEBAR_WIDTH_STEP,
+      ArrowLeft: effectiveWidth - SIDEBAR_WIDTH_STEP,
+      ArrowRight: effectiveWidth + SIDEBAR_WIDTH_STEP,
       End: maxWidth,
       Home: SIDEBAR_MIN_WIDTH,
     }[event.key];
@@ -157,7 +165,7 @@ const SlideSidebar: React.FC<SlideSidebarProps> = ({ isUserOpened, config, slide
           aria-orientation="vertical"
           aria-valuemin={SIDEBAR_MIN_WIDTH}
           aria-valuemax={maxWidth}
-          aria-valuenow={Math.min(width, maxWidth)}
+          aria-valuenow={effectiveWidth}
           title="Drag to resize, double-click to reset"
           onKeyDown={handleResizeKeyDown}
           onDoubleClick={() => resizeTo(SIDEBAR_DEFAULT_WIDTH)}

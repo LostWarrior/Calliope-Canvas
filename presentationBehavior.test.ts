@@ -97,6 +97,11 @@ test('limits sidebar width to half the viewport', () => {
   assert.equal(getSidebarMaxWidth(300), SIDEBAR_MIN_WIDTH);
 });
 
+test('shrinks a stored width that no longer fits a narrower viewport', () => {
+  assert.equal(clampSidebarWidth(480, 600), 300);
+  assert.equal(clampSidebarWidth(clampSidebarWidth(480, 600) - 16, 600), 284);
+});
+
 test('reads a stored sidebar width or falls back to the default', () => {
   assert.equal(parseSidebarWidth('320'), 320);
   assert.equal(parseSidebarWidth('9000'), SIDEBAR_MAX_WIDTH);
