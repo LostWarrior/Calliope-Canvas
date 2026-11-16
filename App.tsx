@@ -312,8 +312,8 @@ const DeckView: React.FC = () => {
         return;
       }
 
-      // Let native buttons activate with Space without also toggling animations.
-      if (e.key === ' ' && e.target instanceof HTMLElement && e.target.closest('button')) {
+      // Let keyboard-focused buttons activate with Space without also toggling animations.
+      if (e.key === ' ' && e.target instanceof HTMLElement && e.target.closest('button')?.matches(':focus-visible')) {
         return;
       }
 
