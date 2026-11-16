@@ -10,7 +10,7 @@
     "test": "node --test *.test.ts"
   },
   "engines": {
-    "node": ">=22.18"
+    "node": "^22.18.0 || >=23.6.0"
   },
   "dependencies": {
     "react": "^18.2.0",
