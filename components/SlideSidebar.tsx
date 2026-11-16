@@ -82,6 +82,12 @@ const SlideSidebar: React.FC<SlideSidebarProps> = ({ isUserOpened, config, slide
     resizeAndSave(nextWidth);
   };
 
+  const handleEscapeKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+    if (event.key !== 'Escape') return;
+    event.stopPropagation();
+    onClose();
+  };
+
   const renderSlide = (index: number) => {
     const title = slides[index].title || `Slide ${index + 1}`;
     const isCurrent = index === currentSlide;
@@ -111,7 +117,7 @@ const SlideSidebar: React.FC<SlideSidebarProps> = ({ isUserOpened, config, slide
   return (
     <>
       <button type="button" aria-label="Hide sidebar" onClick={onClose} className="fixed inset-0 z-30 bg-canvas/70 backdrop-blur-sm md:hidden" />
-      <aside id="slide-sidebar" aria-labelledby={headingId} className={`${shouldAnimateIn ? 'slide-sidebar-panel-animated ' : ''}fixed inset-y-0 left-0 z-40 flex w-64 max-w-[calc(100vw-3rem)] md:w-(--sidebar-width) flex-col overflow-hidden border-r border-border bg-surface shadow-[12px_0_48px_rgb(0_0_0_/_0.12)] md:shadow-none`}>
+      <aside id="slide-sidebar" aria-labelledby={headingId} onKeyDown={handleEscapeKeyDown} className={`${shouldAnimateIn ? 'slide-sidebar-panel-animated ' : ''}fixed inset-y-0 left-0 z-40 flex w-64 max-w-[calc(100vw-3rem)] md:w-(--sidebar-width) flex-col overflow-hidden border-r border-border bg-surface shadow-[12px_0_48px_rgb(0_0_0_/_0.12)] md:shadow-none`}>
         <div className="relative flex shrink-0 items-center justify-between gap-3 px-5 pt-6 pb-4">
           <div className="min-w-0">
             {config.eyebrow && (
@@ -127,11 +133,6 @@ const SlideSidebar: React.FC<SlideSidebarProps> = ({ isUserOpened, config, slide
         </div>
 
         <nav aria-label={label} className="relative min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pb-4" onKeyDown={event => {
-          if (event.key === 'Escape') {
-            event.stopPropagation();
-            onClose();
-            return;
-          }
           if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
             event.preventDefault();
             event.stopPropagation();

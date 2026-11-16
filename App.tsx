@@ -54,6 +54,7 @@ export const progressBarConfig: ProgressBarConfig = {
   position: 'top',
 };
 
+const SMALL_SCREEN_QUERY = '(max-width: 767px)';
 const SIDEBAR_WIDTH_STORAGE_KEY = 'calliope-canvas-sidebar-width';
 
 const MIN_ZOOM_LEVEL = 0.8;
@@ -80,8 +81,26 @@ const DeckView: React.FC = () => {
   const isSidebarVisible = isSidebarOpen && !isPresentationMode && !isFullscreen;
   const isHeaderVisible = headerConfig.show !== false;
   const progressBarPosition = resolveProgressBarPosition(progressBarConfig.position ?? 'top', isHeaderVisible && !isPresentationMode && !isFullscreen);
+  const [isSmallScreen, setIsSmallScreen] = useState(() => window.matchMedia(SMALL_SCREEN_QUERY).matches);
+  const isSidebarOverlay = isSidebarVisible && isSmallScreen;
+  const deckRootRef = useRef<HTMLDivElement>(null);
   const activeSlide = slides[currentSlide];
   const { setTheme, theme } = useTheme();
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(SMALL_SCREEN_QUERY);
+    const handleChange = () => setIsSmallScreen(mediaQuery.matches);
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  // Keep Tab inside the full-screen sidebar overlay by making the deck behind it inert.
+  useEffect(() => {
+    if (!isSidebarOverlay) return undefined;
+    const behind = deckRootRef.current?.querySelectorAll('main, footer, [data-deck-chrome]') ?? [];
+    behind.forEach(element => element.setAttribute('inert', ''));
+    return () => behind.forEach(element => element.removeAttribute('inert'));
+  }, [isSidebarOverlay]);
 
   const sidebarOpenedByUserRef = useRef(false);
 
@@ -381,6 +400,7 @@ const DeckView: React.FC = () => {
 
   return (
     <div
+      ref={deckRootRef}
       className={`relative flex min-h-screen w-full flex-col items-center justify-center bg-canvas p-4 font-sans text-text ${isSidebarVisible ? 'md:pl-[calc(var(--sidebar-width)+1rem)]' : ''}`}
       style={{ '--sidebar-width': `min(${sidebarWidth}px, 50vw)` } as React.CSSProperties}
     >

@@ -9,6 +9,7 @@ interface PresentationModeButtonProps {
 
 const PresentationModeButton: React.FC<PresentationModeButtonProps> = ({ isPresentationMode, togglePresentationMode }) => (
   <ThemedButton
+    data-deck-chrome=""
     onClick={togglePresentationMode}
     variant={isPresentationMode ? 'primary' : 'ghost'}
     title="Toggle presentation mode (P)"
