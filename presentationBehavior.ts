@@ -1,14 +1,6 @@
-// @ts-check
+import type { HelpShortcutItem, HelpShortcutSection, VoiceCommand } from './types.ts';
 
-/**
- * @typedef {'next' | 'previous' | 'startAnimation' | 'stopAnimation' | 'zoomIn' | 'zoomOut'} VoiceAction
- * @typedef {{ action: VoiceAction, label: string, phrases: string[] }} VoiceCommand
- * @typedef {{ shortcut: string, description: string }} HelpShortcutItem
- * @typedef {{ title: string, items: HelpShortcutItem[] }} HelpShortcutSection
- */
-
-/** @type {VoiceCommand[]} */
-export const VOICE_COMMANDS = [
+export const VOICE_COMMANDS: VoiceCommand[] = [
   { action: 'next', label: 'Next Slide', phrases: ['next slide please', 'next slide'] },
   {
     action: 'previous',
@@ -21,8 +13,7 @@ export const VOICE_COMMANDS = [
   { action: 'zoomIn', label: 'Zoom In', phrases: ['zoom in'] },
 ];
 
-/** @type {Record<string, string>} */
-const MISHEARD_COMMAND_WORDS = {
+const MISHEARD_COMMAND_WORDS: Record<string, string> = {
   flight: 'slide',
   light: 'slide',
   previews: 'previous',
@@ -31,20 +22,13 @@ const MISHEARD_COMMAND_WORDS = {
   slight: 'slide',
 };
 
-/**
- * @param {string} transcript
- */
-const correctMisheardWords = transcript =>
+const correctMisheardWords = (transcript: string) =>
   transcript
     .split(' ')
     .map(word => MISHEARD_COMMAND_WORDS[word] ?? word)
     .join(' ');
 
-/**
- * @param {string[]} normalizedTranscripts
- * @returns {VoiceCommand | undefined}
- */
-export const matchVoiceCommand = normalizedTranscripts =>
+export const matchVoiceCommand = (normalizedTranscripts: string[]): VoiceCommand | undefined =>
   normalizedTranscripts
     .map(correctMisheardWords)
     .map(transcript =>
@@ -52,7 +36,7 @@ export const matchVoiceCommand = normalizedTranscripts =>
     )
     .find(Boolean);
 
-const HELP_SHORTCUT_ITEMS = [
+const HELP_SHORTCUT_ITEMS: HelpShortcutItem[] = [
   { shortcut: 'ArrowRight / ArrowDown', description: 'Next slide' },
   { shortcut: 'ArrowLeft / ArrowUp', description: 'Previous slide' },
   { shortcut: 'Space', description: 'Pause or resume animations' },
@@ -66,10 +50,7 @@ const HELP_SHORTCUT_ITEMS = [
   { shortcut: 'P', description: 'Toggle presentation mode (hides voice and follow-speech controls)' },
 ];
 
-/**
- * @returns {HelpShortcutSection[]}
- */
-export const getHelpShortcutSections = () => [
+export const getHelpShortcutSections = (): HelpShortcutSection[] => [
   {
     title: 'Keyboard shortcuts',
     items: HELP_SHORTCUT_ITEMS,
@@ -86,17 +67,10 @@ export const getHelpShortcutSections = () => [
   },
 ];
 
-/**
- * @param {string} key
- * @param {boolean} isHelpOpen
- */
-export const isPresentationShortcutAllowed = (key, isHelpOpen) =>
+export const isPresentationShortcutAllowed = (key: string, isHelpOpen: boolean) =>
   !isHelpOpen || key === '?' || key === 'Escape';
 
-/**
- * @param {1 | -1} direction
- */
-export const getSlideTransitionClass = direction =>
+export const getSlideTransitionClass = (direction: 1 | -1) =>
   direction === 1
     ? 'slide-transition slide-transition-forward'
     : 'slide-transition slide-transition-backward';

@@ -6,7 +6,7 @@ import {
   isPresentationShortcutAllowed,
   getHelpShortcutSections,
   matchVoiceCommand,
-} from './presentationBehavior.js';
+} from './presentationBehavior.ts';
 
 test('uses a forward animation class for positive direction', () => {
   assert.equal(getSlideTransitionClass(1), 'slide-transition slide-transition-forward');

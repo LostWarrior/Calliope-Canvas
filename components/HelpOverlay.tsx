@@ -1,15 +1,6 @@
 import React, { useEffect, useId, useRef } from 'react';
+import type { HelpShortcutSection } from '../types';
 import ThemedButton from './ThemedButton';
-
-type HelpShortcutItem = {
-  shortcut: string;
-  description: string;
-};
-
-type HelpShortcutSection = {
-  items: HelpShortcutItem[];
-  title: string;
-};
 
 interface HelpOverlayProps {
   isOpen: boolean;

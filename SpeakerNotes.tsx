@@ -7,7 +7,7 @@ import ThemeSelector from './components/ThemeSelector';
 import ThemedButton from './components/ThemedButton';
 import { useTheme } from './components/ThemeProvider';
 import { isThemeName, type ThemeName } from './theme';
-import type { TranscriptEntry } from './transcript';
+import type { TranscriptEntry } from './types';
 
 export const SPEAKER_NOTES_CHANNEL = 'calliope-canvas-speaker-notes';
 export const SPEAKER_NOTES_QUERY_PARAM = 'speaker-notes';

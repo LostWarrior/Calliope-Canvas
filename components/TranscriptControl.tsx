@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
-import { formatTranscript, getTranscriptFileName, type TranscriptEntry } from '../transcript';
+import { formatTranscript, getTranscriptFileName } from '../transcript';
+import type { TranscriptEntry } from '../types';
 import { DownloadIcon, RecordIcon, StopIcon } from './Icons';
 import ThemedButton from './ThemedButton';
 

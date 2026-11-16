@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node --test *.test.ts"
+  },
+  "engines": {
+    "node": "^22.18.0 || >=23.6.0"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -14,7 +18,7 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
-    "@types/node": "^25.8.0",
+    "@types/node": "^22",
     "@types/react": "^18.3.28",
     "@types/react-dom": "^18.2.0",
     "@vitejs/plugin-react": "^4.2.1",
