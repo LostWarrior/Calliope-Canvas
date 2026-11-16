@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { formatTranscript, getTranscriptFileName } from './transcript.ts';
 
 const slides = [{ title: 'Welcome' }, { title: 'Pricing' }];
-const at = (hours, minutes, seconds) => new Date(2026, 9, 3, hours, minutes, seconds).getTime();
+const at = (hours: number, minutes: number, seconds: number) => new Date(2026, 9, 3, hours, minutes, seconds).getTime();
 
 test('formats one line per entry with time and slide number', () => {
   const text = formatTranscript(

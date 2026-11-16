@@ -18,6 +18,7 @@
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "erasableSyntaxOnly": true,
+    "strict": true,
     "moduleDetection": "force",
     "jsx": "react-jsx",
     "paths": {
