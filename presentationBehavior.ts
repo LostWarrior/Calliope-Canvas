@@ -1,4 +1,4 @@
-import type { HelpShortcutItem, HelpShortcutSection, VoiceCommand } from './types.ts';
+import type { HelpShortcutItem, HelpShortcutSection, ProgressBarPosition, SlideGroup, VoiceCommand } from './types.ts';
 
 export const VOICE_COMMANDS: VoiceCommand[] = [
   { action: 'next', label: 'Next Slide', phrases: ['next slide please', 'next slide'] },
@@ -48,6 +48,7 @@ const HELP_SHORTCUT_ITEMS: HelpShortcutItem[] = [
   { shortcut: 'Esc', description: 'Close this help panel' },
   { shortcut: 'H', description: 'Hide or show controls (keeps slide counter visible)' },
   { shortcut: 'P', description: 'Toggle presentation mode (hides voice and follow-speech controls)' },
+  { shortcut: 'S', description: 'Show or hide the slide sidebar' },
 ];
 
 export const getHelpShortcutSections = (): HelpShortcutSection[] => [
@@ -62,7 +63,7 @@ export const getHelpShortcutSections = (): HelpShortcutSection[] => [
         shortcut: command.label,
         description: command.phrases.join(' | '),
       })),
-      { shortcut: 'Auto advance (speech bubble button)', description: 'Advance automatically when you say a slide’s cue' },
+      { shortcut: 'Auto advance', description: 'Turn on auto advance in the footer, then say a slide’s cue' },
     ],
   },
 ];
@@ -74,3 +75,37 @@ export const getSlideTransitionClass = (direction: 1 | -1) =>
   direction === 1
     ? 'slide-transition slide-transition-forward'
     : 'slide-transition slide-transition-backward';
+
+export const groupSlidesBySection = (slides: { section?: string }[]): SlideGroup[] =>
+  slides.reduce<SlideGroup[]>((groups, slide, index) => {
+    const lastGroup = groups[groups.length - 1];
+    if (lastGroup && lastGroup.section === slide.section) {
+      lastGroup.slideIndexes.push(index);
+    } else {
+      groups.push({ section: slide.section, slideIndexes: [index] });
+    }
+    return groups;
+  }, []);
+
+export const resolveProgressBarPosition = (
+  position: ProgressBarPosition,
+  isHeaderRowVisible: boolean,
+): ProgressBarPosition => (position === 'below-header' && !isHeaderRowVisible ? 'top' : position);
+
+export const SIDEBAR_DEFAULT_WIDTH = 272;
+export const SIDEBAR_MIN_WIDTH = 224;
+export const SIDEBAR_MAX_WIDTH = 480;
+export const SIDEBAR_WIDTH_STEP = 16;
+
+export const getSidebarMaxWidth = (viewportWidth: number) =>
+  Math.max(SIDEBAR_MIN_WIDTH, Math.min(SIDEBAR_MAX_WIDTH, Math.floor(viewportWidth / 2)));
+
+export const clampSidebarWidth = (width: number, viewportWidth: number) =>
+  Math.round(Math.min(getSidebarMaxWidth(viewportWidth), Math.max(SIDEBAR_MIN_WIDTH, width)));
+
+export const parseSidebarWidth = (storedWidth: string | null) => {
+  const width = Number(storedWidth);
+  return storedWidth && Number.isFinite(width)
+    ? clampSidebarWidth(width, Number.POSITIVE_INFINITY)
+    : SIDEBAR_DEFAULT_WIDTH;
+};

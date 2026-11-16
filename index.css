@@ -12,6 +12,7 @@
   --color-accent: rgb(var(--theme-accent));
   --color-danger: rgb(var(--theme-danger));
   --color-focus: rgb(var(--theme-focus));
+  --shadow-sidebar: 12px 0 48px rgb(var(--theme-shadow) / 0.12);
 }
 
 @utility duration-motion {
@@ -39,6 +40,7 @@
   --theme-accent: 168 85 247;
   --theme-danger: 251 113 133;
   --theme-focus: 125 211 252;
+  --theme-shadow: 0 0 0;
   --duration-motion: 180ms;
 }
 
@@ -55,6 +57,7 @@
   --theme-accent: 124 58 237;
   --theme-danger: 225 29 72;
   --theme-focus: 14 165 233;
+  --theme-shadow: 15 23 42;
 }
 
 [data-theme='contrast'] {
@@ -70,6 +73,7 @@
   --theme-accent: 34 211 238;
   --theme-danger: 248 113 113;
   --theme-focus: 250 204 21;
+  --theme-shadow: 0 0 0;
 }
 
 
@@ -86,6 +90,7 @@
   --theme-accent: 244 114 182;
   --theme-danger: 248 113 113;
   --theme-focus: 253 186 116;
+  --theme-shadow: 0 0 0;
 }
 
 [data-theme='forest'] {
@@ -101,6 +106,7 @@
   --theme-accent: 251 191 36;
   --theme-danger: 248 113 113;
   --theme-focus: 110 231 183;
+  --theme-shadow: 0 0 0;
 }
 
 [data-theme='sepia'] {
@@ -116,6 +122,7 @@
   --theme-accent: 37 99 105;
   --theme-danger: 185 28 28;
   --theme-focus: 180 100 40;
+  --theme-shadow: 67 52 34;
 }
 
 [data-theme='stormy-morning'] {
@@ -131,6 +138,7 @@
   --theme-accent: 109 140 170;
   --theme-danger: 252 133 150;
   --theme-focus: 170 208 246;
+  --theme-shadow: 0 0 0;
 }
 
 [data-theme='ocean-tide'] {
@@ -146,6 +154,7 @@
   --theme-accent: 111 124 225;
   --theme-danger: 251 124 143;
   --theme-focus: 64 220 220;
+  --theme-shadow: 0 0 0;
 }
 
 [data-theme='space-berries'] {
@@ -161,6 +170,7 @@
   --theme-accent: 251 106 43;
   --theme-danger: 251 130 148;
   --theme-focus: 255 202 229;
+  --theme-shadow: 0 0 0;
 }
 
 [data-theme='desert-dusk'] {
@@ -176,6 +186,7 @@
   --theme-accent: 183 124 117;
   --theme-danger: 252 139 155;
   --theme-focus: 244 196 177;
+  --theme-shadow: 0 0 0;
 }
 
 [data-theme='night-sands'] {
@@ -191,6 +202,7 @@
   --theme-accent: 148 141 119;
   --theme-danger: 252 139 155;
   --theme-focus: 216 206 175;
+  --theme-shadow: 0 0 0;
 }
 
 [data-theme='lavender-fields'] {
@@ -206,6 +218,7 @@
   --theme-accent: 113 111 64;
   --theme-danger: 163 15 52;
   --theme-focus: 72 38 87;
+  --theme-shadow: 33 17 57;
 }
 
 [data-theme='winter-chill'] {
@@ -221,6 +234,7 @@
   --theme-accent: 107 127 130;
   --theme-danger: 190 18 60;
   --theme-focus: 42 66 68;
+  --theme-shadow: 11 46 50;
 }
 
 [data-theme='italian-leather'] {
@@ -236,6 +250,7 @@
   --theme-accent: 134 126 50;
   --theme-danger: 251 113 133;
   --theme-focus: 218 147 132;
+  --theme-shadow: 0 0 0;
 }
 
 [data-theme='above-the-surface'] {
@@ -251,6 +266,7 @@
   --theme-accent: 19 133 72;
   --theme-danger: 179 17 56;
   --theme-focus: 16 87 80;
+  --theme-shadow: 8 43 40;
 }
 
 [data-theme='eggs-for-breakfast'] {
@@ -266,6 +282,7 @@
   --theme-accent: 175 118 31;
   --theme-danger: 190 18 60;
   --theme-focus: 50 89 132;
+  --theme-shadow: 48 49 48;
 }
 
 [data-theme='graphite'] {
@@ -281,6 +298,7 @@
   --theme-accent: 85 85 85;
   --theme-danger: 190 18 60;
   --theme-focus: 34 34 34;
+  --theme-shadow: 34 34 34;
 }
 
 [data-theme='admiral'] {
@@ -296,6 +314,7 @@
   --theme-accent: 230 57 70;
   --theme-danger: 190 18 60;
   --theme-focus: 0 43 91;
+  --theme-shadow: 0 43 91;
 }
 
 [data-theme='sorbet'] {
@@ -311,6 +330,7 @@
   --theme-accent: 246 98 0;
   --theme-danger: 190 18 60;
   --theme-focus: 33 115 85;
+  --theme-shadow: 96 40 102;
 }
 
 [data-theme='woodland'] {
@@ -326,6 +346,7 @@
   --theme-accent: 176 95 55;
   --theme-danger: 251 113 133;
   --theme-focus: 185 212 90;
+  --theme-shadow: 0 0 0;
 }
 
 [data-theme='seaglass'] {
@@ -341,6 +362,7 @@
   --theme-accent: 0 161 163;
   --theme-danger: 190 18 60;
   --theme-focus: 0 114 114;
+  --theme-shadow: 0 71 71;
 }
 
 [data-theme='gilded-night'] {
@@ -356,6 +378,7 @@
   --theme-accent: 248 244 227;
   --theme-danger: 251 113 133;
   --theme-focus: 255 225 64;
+  --theme-shadow: 0 0 0;
 }
 
 [data-theme='neon-orchid'] {
@@ -371,6 +394,7 @@
   --theme-accent: 162 0 231;
   --theme-danger: 251 113 133;
   --theme-focus: 255 119 187;
+  --theme-shadow: 0 0 0;
 }
 
 [data-theme='ember'] {
@@ -386,6 +410,7 @@
   --theme-accent: 255 72 33;
   --theme-danger: 190 18 60;
   --theme-focus: 189 33 0;
+  --theme-shadow: 51 51 51;
 }
 
 body {
@@ -468,11 +493,7 @@ body {
   }
 }
 
-.progress-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 3px;
+.progress-bar-fill {
   background: linear-gradient(
     to right,
     rgb(var(--theme-primary)),
@@ -482,6 +503,27 @@ body {
 
 .help-modal-panel {
   animation: helpModalIn 180ms ease-out;
+}
+
+body.is-resizing-sidebar {
+  cursor: col-resize;
+  user-select: none;
+}
+
+.slide-sidebar-panel-animated {
+  animation: slideSidebarIn 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes slideSidebarIn {
+  from {
+    opacity: 0;
+    transform: translate3d(-1.5rem, 0, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 @keyframes helpModalIn {
@@ -498,7 +540,8 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .slide-transition,
-  .help-modal-panel {
+  .help-modal-panel,
+  .slide-sidebar-panel-animated {
     animation: none;
   }
 }
