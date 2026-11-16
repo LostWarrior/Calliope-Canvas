@@ -1,4 +1,5 @@
 import { matchVoiceCommand } from './presentationBehavior.ts';
+import type { VoiceCommand } from './types.ts';
 
 export const SPEECH_FOLLOW_MIN_CONFIDENCE = 0.7;
 export const SPEECH_FOLLOW_MIN_SCORE = 0.75;
@@ -53,7 +54,14 @@ export type SpeechFollowInput = {
   resultId: string;
 };
 
-export const getSpeechFollowDecision = (input: SpeechFollowInput) => {
+export type SpeechFollowDecision =
+  | {
+      shouldAdvance: false;
+      reason: 'disabled' | 'blocked' | 'end-of-deck' | 'duplicate' | 'cooldown' | 'low-confidence' | 'no-match';
+    }
+  | { shouldAdvance: true; cue: string; score: number; toSlide: number };
+
+export const getSpeechFollowDecision = (input: SpeechFollowInput): SpeechFollowDecision => {
   if (!input.enabled) return { shouldAdvance: false, reason: 'disabled' };
   if (input.isMatchingBlocked) return { shouldAdvance: false, reason: 'blocked' };
   if (input.currentSlide >= input.slideCount - 1) return { shouldAdvance: false, reason: 'end-of-deck' };
@@ -83,7 +91,15 @@ export const getSpeechFollowDecision = (input: SpeechFollowInput) => {
   };
 };
 
-export const getRecognitionDecision = (normalizedAlternatives: string[], speechFollowInput: SpeechFollowInput) => {
+export type RecognitionDecision =
+  | { type: 'command'; command: VoiceCommand }
+  | ({ type: 'auto-advance' } & Extract<SpeechFollowDecision, { shouldAdvance: true }>)
+  | ({ type: 'none' } & Extract<SpeechFollowDecision, { shouldAdvance: false }>);
+
+export const getRecognitionDecision = (
+  normalizedAlternatives: string[],
+  speechFollowInput: SpeechFollowInput
+): RecognitionDecision => {
   const command = matchVoiceCommand(normalizedAlternatives);
   if (command) return { type: 'command', command };
 

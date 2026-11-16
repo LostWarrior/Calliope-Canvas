@@ -99,7 +99,7 @@ export const useSpeechFollow = ({
       return;
     }
 
-    if (decision.type !== 'auto-advance' || !('cue' in decision) || !('toSlide' in decision)) return;
+    if (decision.type !== 'auto-advance') return;
 
     const autoAdvance: AutoAdvance = {
       cue: decision.cue,
