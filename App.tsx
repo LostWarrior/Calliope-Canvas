@@ -83,8 +83,11 @@ const DeckView: React.FC = () => {
   const { setTheme, theme } = useTheme();
 
   const closeSidebar = () => {
+    const hadFocusInside = document.getElementById('slide-sidebar')?.contains(document.activeElement);
     setIsSidebarOpen(false);
-    requestAnimationFrame(() => document.getElementById('slide-sidebar-toggle')?.focus());
+    if (hadFocusInside) {
+      requestAnimationFrame(() => document.getElementById('slide-sidebar-toggle')?.focus());
+    }
   };
 
   const toggleSidebar = () => {
