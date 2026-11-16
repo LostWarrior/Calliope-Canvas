@@ -39,7 +39,7 @@ Notes in `[square brackets]` are automatically italicized in the speaker-notes w
 | Build | `npm run build` |
 | Preview build | `npm run preview` |
 | Type check only | `npx tsc --noEmit` |
-| Tests | `npm test` |
+| Tests (`presentationBehavior`, `speechFollowBehavior`, `transcript`) | `npm test` |
 
 Dev server runs on **http://localhost:3000**.
 
@@ -52,7 +52,8 @@ Dev server runs on **http://localhost:3000**.
 - Themes are `[data-theme='…']` blocks in `index.css` setting `--theme-*` RGB triplets; `@theme inline` maps them to utilities (`bg-canvas`, `text-muted`, `bg-primary/85`, …)
 - Style with semantic theme utilities, never fixed palette colours
 - No linter or formatter configured
-- Tests use `node:test` and run as TypeScript directly in Node (22.18+), with no test framework or loader. Relative imports between these modules need the `.ts` extension, and they can only import types from other files (`import type`)
+- `npm test` runs `node --test *.test.ts` with Node's built-in type stripping (Node `^22.18.0 || >=23.6.0`), no framework or loader. Modules loaded by those tests (`presentationBehavior.ts`, `speechFollowBehavior.ts`, `transcript.ts`) may only use erasable TypeScript syntax (no `enum`, `namespace`, or parameter properties; enforced by `erasableSyntaxOnly`), must write the `.ts` extension on runtime relative imports (`./types.ts`), and must use `import type` for type-only imports (`verbatimModuleSyntax`). Shared UI types live in `types.ts`
+- `strict` is on in `tsconfig.json`
 
 ## Architecture Notes
 
