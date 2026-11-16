@@ -1,5 +1,5 @@
 import React, { useEffect, useId, useRef } from 'react';
-import type { HelpShortcutSection } from '../presentationBehavior';
+import type { HelpShortcutSection } from '../types';
 import ThemedButton from './ThemedButton';
 
 interface HelpOverlayProps {

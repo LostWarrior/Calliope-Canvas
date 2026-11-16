@@ -30,3 +30,8 @@ export type VoiceAction =
   | 'stopAnimation'
   | 'zoomIn'
   | 'zoomOut';
+
+export type VoiceCommand = { action: VoiceAction; label: string; phrases: string[] };
+export type HelpShortcutItem = { shortcut: string; description: string };
+export type HelpShortcutSection = { title: string; items: HelpShortcutItem[] };
+export type TranscriptEntry = { slide: number; text: string; timestamp: number };

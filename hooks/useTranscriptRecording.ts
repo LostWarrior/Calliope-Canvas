@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import type { TranscriptEntry } from '../transcript';
+import type { TranscriptEntry } from '../types';
 
 interface UseTranscriptRecordingOptions {
   canRecord: boolean;

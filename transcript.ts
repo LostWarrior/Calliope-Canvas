@@ -1,4 +1,4 @@
-export type TranscriptEntry = { slide: number; text: string; timestamp: number };
+import type { TranscriptEntry } from './types.ts';
 
 const pad = (value: number) => String(value).padStart(2, '0');
 

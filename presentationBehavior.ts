@@ -1,8 +1,4 @@
-import type { VoiceAction } from './types.ts';
-
-export type VoiceCommand = { action: VoiceAction; label: string; phrases: string[] };
-export type HelpShortcutItem = { shortcut: string; description: string };
-export type HelpShortcutSection = { title: string; items: HelpShortcutItem[] };
+import type { HelpShortcutItem, HelpShortcutSection, VoiceCommand } from './types.ts';
 
 export const VOICE_COMMANDS: VoiceCommand[] = [
   { action: 'next', label: 'Next Slide', phrases: ['next slide please', 'next slide'] },
