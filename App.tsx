@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import Footer from './components/Footer';
 import Header from './components/Header';
+import PresentationModeButton from './components/PresentationModeButton';
 import ProgressBar from './components/ProgressBar';
 import SlideSidebar from './components/SlideSidebar';
 import { ThemeProvider, useTheme } from './components/ThemeProvider';
@@ -388,6 +389,9 @@ const DeckView: React.FC = () => {
       )}
       {progressBarPosition !== 'hidden' && (
         <ProgressBar currentSlide={currentSlide} isSidebarVisible={isSidebarVisible} position={progressBarPosition} slideCount={slides.length} />
+      )}
+      {!isHeaderVisible && (
+        <PresentationModeButton isPresentationMode={isPresentationMode} togglePresentationMode={togglePresentationMode} />
       )}
       {isHeaderVisible && (
         <Header

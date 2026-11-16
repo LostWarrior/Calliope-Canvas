@@ -1,6 +1,7 @@
 import React from 'react';
 import type { SlideDefinition } from '../types';
-import { PresentationIcon, SidebarIcon } from './Icons';
+import { SidebarIcon } from './Icons';
+import PresentationModeButton from './PresentationModeButton';
 import ThemedButton from './ThemedButton';
 
 interface HeaderProps {
@@ -58,15 +59,7 @@ const Header: React.FC<HeaderProps> = ({
           )}
         </div>
       )}
-      <ThemedButton
-        onClick={togglePresentationMode}
-        variant={isPresentationMode ? 'primary' : 'ghost'}
-        title="Toggle presentation mode (P)"
-        aria-pressed={isPresentationMode}
-        className="fixed top-4 right-4 z-30"
-      >
-        <PresentationIcon className="h-5 w-5" />
-      </ThemedButton>
+      <PresentationModeButton isPresentationMode={isPresentationMode} togglePresentationMode={togglePresentationMode} />
     </>
   );
 };
