@@ -72,10 +72,10 @@ Add a `section` to slides to group consecutive slides under a numbered heading. 
 { content: <IndexScanSlide />, section: 'Indices and query performance', title: 'SELECT with a B-tree index' }
 ```
 
-Set the sidebar text with `sidebarConfig` in `App.tsx`. Every field is optional:
+Set the sidebar text with `SIDEBAR_CONFIG` in `App.tsx`. Every field is optional:
 
 ```tsx
-export const sidebarConfig: SidebarConfig = {
+export const SIDEBAR_CONFIG: SidebarConfig = {
   label: 'Slides',                // toggle button text, the default
   eyebrow: 'PostgreSQL training', // small line above the title
   title: 'Your slides',           // sidebar heading, defaults to the label
@@ -88,12 +88,12 @@ export const sidebarConfig: SidebarConfig = {
 Set these in `App.tsx`. Every field is optional:
 
 ```tsx
-export const headerConfig: HeaderConfig = {
+export const HEADER_CONFIG: HeaderConfig = {
   show: true,       // false hides the sidebar toggle, breadcrumb and presentation-mode button
   breadcrumb: true, // false hides the section / slide title breadcrumb
 };
 
-export const progressBarConfig: ProgressBarConfig = {
+export const PROGRESS_BAR_CONFIG: ProgressBarConfig = {
   position: 'top', // 'top' | 'below-header' | 'bottom' | 'hidden'
 };
 ```

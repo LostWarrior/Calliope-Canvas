@@ -41,16 +41,16 @@ export const slides: SlideDefinition[] = [
   },
 ];
 
-export const sidebarConfig: SidebarConfig = {
+export const SIDEBAR_CONFIG: SidebarConfig = {
   label: 'Slides',
 };
 
-export const headerConfig: HeaderConfig = {
+export const HEADER_CONFIG: HeaderConfig = {
   show: true,
   breadcrumb: true,
 };
 
-export const progressBarConfig: ProgressBarConfig = {
+export const PROGRESS_BAR_CONFIG: ProgressBarConfig = {
   position: 'top',
 };
 
@@ -79,8 +79,8 @@ const DeckView: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(() => parseSidebarWidth(window.localStorage.getItem(SIDEBAR_WIDTH_STORAGE_KEY)));
   const isSidebarVisible = isSidebarOpen && !isPresentationMode && !isFullscreen;
-  const isHeaderVisible = headerConfig.show !== false;
-  const progressBarPosition = resolveProgressBarPosition(progressBarConfig.position ?? 'top', isHeaderVisible && !isPresentationMode && !isFullscreen);
+  const isHeaderVisible = HEADER_CONFIG.show !== false;
+  const progressBarPosition = resolveProgressBarPosition(PROGRESS_BAR_CONFIG.position ?? 'top', isHeaderVisible && !isPresentationMode && !isFullscreen);
   const [isSmallScreen, setIsSmallScreen] = useState(() => window.matchMedia(SMALL_SCREEN_QUERY).matches);
   const isSidebarOverlay = isSidebarVisible && isSmallScreen;
   const deckRootRef = useRef<HTMLDivElement>(null);
@@ -405,7 +405,7 @@ const DeckView: React.FC = () => {
       style={{ '--sidebar-width': `min(${sidebarWidth}px, 50vw)` } as React.CSSProperties}
     >
       {isSidebarVisible && (
-        <SlideSidebar isUserOpened={sidebarOpenedByUserRef.current} config={sidebarConfig} slides={slides} currentSlide={currentSlide} onClose={closeSidebar} onResize={setSidebarWidth} onResizeEnd={saveSidebarWidth} onSelect={goToSlide} width={sidebarWidth} />
+        <SlideSidebar isUserOpened={sidebarOpenedByUserRef.current} config={SIDEBAR_CONFIG} slides={slides} currentSlide={currentSlide} onClose={closeSidebar} onResize={setSidebarWidth} onResizeEnd={saveSidebarWidth} onSelect={goToSlide} width={sidebarWidth} />
       )}
       {progressBarPosition !== 'hidden' && (
         <ProgressBar currentSlide={currentSlide} isSidebarVisible={isSidebarVisible} position={progressBarPosition} slideCount={slides.length} />
@@ -419,8 +419,8 @@ const DeckView: React.FC = () => {
           isFullscreen={isFullscreen}
           isPresentationMode={isPresentationMode}
           isSidebarVisible={isSidebarVisible}
-          showBreadcrumb={headerConfig.breadcrumb !== false}
-          sidebarLabel={sidebarConfig.label || 'Slides'}
+          showBreadcrumb={HEADER_CONFIG.breadcrumb !== false}
+          sidebarLabel={SIDEBAR_CONFIG.label || 'Slides'}
           toggleSidebar={toggleSidebar}
           togglePresentationMode={togglePresentationMode}
         />
