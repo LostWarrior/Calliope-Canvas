@@ -5,6 +5,7 @@ import { CloseIcon } from './Icons';
 import ThemedButton from './ThemedButton';
 
 interface SlideSidebarProps {
+  isUserOpened: boolean;
   config: SidebarConfig;
   slides: SlideDefinition[];
   currentSlide: number;
@@ -16,7 +17,7 @@ interface SlideSidebarProps {
 
 const formatNumber = (value: number) => String(value).padStart(2, '0');
 
-const SlideSidebar: React.FC<SlideSidebarProps> = ({ config, slides, currentSlide, onSelect, onClose, onResize, width }) => {
+const SlideSidebar: React.FC<SlideSidebarProps> = ({ isUserOpened, config, slides, currentSlide, onSelect, onClose, onResize, width }) => {
   const slideButtons = useRef<(HTMLButtonElement | null)[]>([]);
   const headingId = useId();
   const groups = useMemo(() => {
@@ -27,8 +28,10 @@ const SlideSidebar: React.FC<SlideSidebarProps> = ({ config, slides, currentSlid
   const [isResizing, setIsResizing] = useState(false);
   const maxWidth = getSidebarMaxWidth(window.innerWidth);
 
+  const shouldAnimateIn = useRef(isUserOpened).current;
+
   useEffect(() => {
-    slideButtons.current[currentSlide]?.focus({ preventScroll: true });
+    if (shouldAnimateIn) slideButtons.current[currentSlide]?.focus({ preventScroll: true });
   }, []);
 
   useEffect(() => {
@@ -84,7 +87,7 @@ const SlideSidebar: React.FC<SlideSidebarProps> = ({ config, slides, currentSlid
   return (
     <>
       <button type="button" aria-label="Hide sidebar" onClick={onClose} className="fixed inset-0 z-30 bg-canvas/70 backdrop-blur-sm md:hidden" />
-      <aside id="slide-sidebar" aria-labelledby={headingId} className="slide-sidebar-panel fixed inset-y-0 left-0 z-40 flex w-64 max-w-[calc(100vw-3rem)] md:w-(--sidebar-width) flex-col overflow-hidden border-r border-border bg-surface shadow-[12px_0_48px_rgb(0_0_0_/_0.12)] md:shadow-none">
+      <aside id="slide-sidebar" aria-labelledby={headingId} className={`${shouldAnimateIn ? 'slide-sidebar-panel-animated ' : ''}fixed inset-y-0 left-0 z-40 flex w-64 max-w-[calc(100vw-3rem)] md:w-(--sidebar-width) flex-col overflow-hidden border-r border-border bg-surface shadow-[12px_0_48px_rgb(0_0_0_/_0.12)] md:shadow-none`}>
         <div className="relative flex shrink-0 items-center justify-between gap-3 px-5 pt-6 pb-4">
           <div className="min-w-0">
             {config.eyebrow && (

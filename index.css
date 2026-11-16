@@ -485,7 +485,7 @@ body.is-resizing-sidebar {
   user-select: none;
 }
 
-.slide-sidebar-panel {
+.slide-sidebar-panel-animated {
   animation: slideSidebarIn 220ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -516,7 +516,7 @@ body.is-resizing-sidebar {
 @media (prefers-reduced-motion: reduce) {
   .slide-transition,
   .help-modal-panel,
-  .slide-sidebar-panel {
+  .slide-sidebar-panel-animated {
     animation: none;
   }
 }

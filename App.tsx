@@ -82,6 +82,12 @@ const DeckView: React.FC = () => {
   const activeSlide = slides[currentSlide];
   const { setTheme, theme } = useTheme();
 
+  const sidebarOpenedByUserRef = useRef(false);
+
+  useEffect(() => {
+    sidebarOpenedByUserRef.current = false;
+  });
+
   const closeSidebar = () => {
     const hadFocusInside = document.getElementById('slide-sidebar')?.contains(document.activeElement);
     setIsSidebarOpen(false);
@@ -91,8 +97,12 @@ const DeckView: React.FC = () => {
   };
 
   const toggleSidebar = () => {
-    if (isSidebarVisible) closeSidebar();
-    else setIsSidebarOpen(true);
+    if (isSidebarVisible) {
+      closeSidebar();
+    } else {
+      sidebarOpenedByUserRef.current = true;
+      setIsSidebarOpen(true);
+    }
   };
 
   useEffect(() => {
@@ -374,7 +384,7 @@ const DeckView: React.FC = () => {
       style={{ '--sidebar-width': `min(${sidebarWidth}px, 50vw)` } as React.CSSProperties}
     >
       {isSidebarVisible && (
-        <SlideSidebar config={sidebarConfig} slides={slides} currentSlide={currentSlide} onClose={closeSidebar} onResize={setSidebarWidth} onSelect={goToSlide} width={sidebarWidth} />
+        <SlideSidebar isUserOpened={sidebarOpenedByUserRef.current} config={sidebarConfig} slides={slides} currentSlide={currentSlide} onClose={closeSidebar} onResize={setSidebarWidth} onSelect={goToSlide} width={sidebarWidth} />
       )}
       {progressBarPosition !== 'hidden' && (
         <ProgressBar currentSlide={currentSlide} isSidebarVisible={isSidebarVisible} position={progressBarPosition} slideCount={slides.length} />
